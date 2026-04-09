@@ -2,13 +2,35 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogCard from "../../components/blog/BlogCard.astro";
+import { BLOG_SOURCE } from "../../lib/constants";
+import { getFirstImageFromMarkdown } from "../../lib/blog";
+import { getMediumPosts } from "../../lib/medium";
 
-const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
-);
+const posts =
+  BLOG_SOURCE === "medium"
+    ? (await getMediumPosts()).map((entry) => ({
+        slug: entry.slug,
+        title: entry.title,
+        excerpt: entry.excerpt,
+        publishedAt: entry.publishedAt,
+        author: entry.author,
+        tags: entry.tags,
+        thumbnail: entry.thumbnail
+      }))
+    : (await getCollection("blog", ({ data }) => !data.draft))
+        .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+        .map((entry) => ({
+          slug: entry.slug,
+          title: entry.data.title,
+          excerpt: entry.data.excerpt,
+          publishedAt: entry.data.publishedAt,
+          author: entry.data.author,
+          tags: entry.data.tags,
+          thumbnail: getFirstImageFromMarkdown(entry.body)
+        }));
 
 const allTags = Array.from(
-  new Set(posts.flatMap((post) => post.data.tags.map((tag) => tag.toLowerCase())))
+  new Set(posts.flatMap((post) => post.tags.map((tag) => tag.toLowerCase())))
 ).sort();
 ---
 
@@ -35,10 +57,12 @@ const allTags = Array.from(
         posts.map((entry) => (
           <BlogCard
             href={`/blog/${entry.slug}`}
-            title={entry.data.title}
-            excerpt={entry.data.excerpt}
-            publishedAt={entry.data.publishedAt}
-            tags={entry.data.tags}
+            title={entry.title}
+            excerpt={entry.excerpt}
+            publishedAt={entry.publishedAt}
+            author={entry.author}
+            thumbnail={entry.thumbnail}
+            tags={entry.tags}
           />
         ))
       }

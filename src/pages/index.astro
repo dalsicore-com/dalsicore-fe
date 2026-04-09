@@ -5,19 +5,42 @@ import Hero from "../components/home/Hero.astro";
 import ProjectCard from "../components/portfolio/ProjectCard.astro";
 import BlogCard from "../components/blog/BlogCard.astro";
 import ResearchCard from "../components/research/ResearchCard.astro";
+import { BLOG_SOURCE } from "../lib/constants";
+import { getFirstImageFromMarkdown } from "../lib/blog";
+import { getMediumPosts } from "../lib/medium";
 
 const portfolio = (await getCollection("portfolio"))
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 2);
 
-const blog = (await getCollection("blog", ({ data }) => !data.draft))
-  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-  .slice(0, 2);
+const blog =
+  BLOG_SOURCE === "medium"
+    ? (await getMediumPosts()).slice(0, 2).map((entry) => ({
+        slug: entry.slug,
+        title: entry.title,
+        excerpt: entry.excerpt,
+        publishedAt: entry.publishedAt,
+        author: entry.author,
+        tags: entry.tags,
+        thumbnail: entry.thumbnail
+      }))
+    : (await getCollection("blog", ({ data }) => !data.draft))
+        .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+        .slice(0, 2)
+        .map((entry) => ({
+          slug: entry.slug,
+          title: entry.data.title,
+          excerpt: entry.data.excerpt,
+          publishedAt: entry.data.publishedAt,
+          author: entry.data.author,
+          tags: entry.data.tags,
+          thumbnail: getFirstImageFromMarkdown(entry.body)
+        }));
 
 const research = (await getCollection("research")).slice(0, 1);
 ---
 
-<BaseLayout title="Dalsicore | Product + Research Studio">
+<BaseLayout title="Dalsicore">
   <Hero />
 
   <section class="section">
@@ -74,10 +97,12 @@ const research = (await getCollection("research")).slice(0, 1);
           blog.map((entry) => (
             <BlogCard
               href={`/blog/${entry.slug}`}
-              title={entry.data.title}
-              excerpt={entry.data.excerpt}
-              publishedAt={entry.data.publishedAt}
-              tags={entry.data.tags}
+              title={entry.title}
+              excerpt={entry.excerpt}
+              publishedAt={entry.publishedAt}
+              author={entry.author}
+              thumbnail={entry.thumbnail}
+              tags={entry.tags}
             />
           ))
         }

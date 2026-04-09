@@ -46,24 +46,26 @@ const { href, title, abstract, field, status, platform, tags = [] } = Astro.prop
     padding: var(--space-5);
     display: grid;
     gap: var(--space-4);
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
   }
 
   .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     border-color: var(--accent-0);
+    background: var(--surface-2);
   }
 
   h3 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.16rem;
     font-family: var(--font-serif);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   p {
     margin: 0;
     color: var(--text-1);
+    font-size: 0.95rem;
   }
 
   dl {
@@ -76,15 +78,15 @@ const { href, title, abstract, field, status, platform, tags = [] } = Astro.prop
   dt {
     color: var(--text-2);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   dd {
     margin: var(--space-1) 0 0;
     color: var(--text-0);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .tags {

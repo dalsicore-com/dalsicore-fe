@@ -1,21 +1,47 @@
 ---
 import { getCollection, render } from "astro:content";
 import PostLayout from "../../layouts/PostLayout.astro";
+import { BLOG_SOURCE } from "../../lib/constants";
+import { getMediumPosts } from "../../lib/medium";
 
 export async function getStaticPaths() {
+  if (BLOG_SOURCE === "medium") {
+    const posts = await getMediumPosts();
+    return posts.map((post) => ({
+      params: { slug: post.slug },
+      props: {
+        title: post.title,
+        excerpt: post.excerpt,
+        publishedAt: post.publishedAt,
+        author: post.author,
+        tags: post.tags,
+        sourceUrl: post.sourceUrl,
+        contentHtml: post.contentHtml,
+        isHtml: true
+      }
+    }));
+  }
+
   const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post, isHtml: false } }));
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, isHtml = false, contentHtml, ...meta } = Astro.props;
+let MarkdownContent;
+
+if (!isHtml && post) {
+  const { Content } = await render(post);
+  MarkdownContent = Content;
+}
 ---
 
 <PostLayout
-  title={post.data.title}
-  excerpt={post.data.excerpt}
-  publishedAt={post.data.publishedAt}
-  tags={post.data.tags}
+  title={isHtml ? meta.title : post.data.title}
+  excerpt={isHtml ? meta.excerpt : post.data.excerpt}
+  publishedAt={isHtml ? meta.publishedAt : post.data.publishedAt}
+  author={isHtml ? meta.author : post.data.author}
+  tags={isHtml ? meta.tags : post.data.tags}
+  sourceUrl={isHtml ? meta.sourceUrl : undefined}
 >
-  <Content />
+  {isHtml ? <div set:html={contentHtml}></div> : MarkdownContent && <MarkdownContent />}
 </PostLayout>

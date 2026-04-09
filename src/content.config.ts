@@ -1,4 +1,4 @@
-import { defineCollection, z } from "astro:content";
+import {defineCollection, z} from "astro:content";
 
 const portfolio = defineCollection({
   schema: z.object({
@@ -25,6 +25,7 @@ const blog = defineCollection({
     title: z.string(),
     excerpt: z.string(),
     publishedAt: z.coerce.date(),
+    author: z.string().default("Dalsicore"),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false)

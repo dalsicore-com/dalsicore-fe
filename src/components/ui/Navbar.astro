@@ -1,12 +1,16 @@
 ---
 import { NAV_LINKS } from "../../lib/constants";
+import BrandMark from "./BrandMark.astro";
 
 const path = Astro.url.pathname;
 ---
 
 <header class="nav-wrap">
   <nav class="container nav">
-    <a class="brand" href="/">Dalsicore<span>.</span></a>
+    <a class="brand" href="/" aria-label="Dalsicore Home">
+      <BrandMark />
+      <span>Dalsicore</span>
+    </a>
     <ul>
       {
         NAV_LINKS.map((item) => (
@@ -26,8 +30,8 @@ const path = Astro.url.pathname;
     position: sticky;
     top: 0;
     z-index: 40;
-    backdrop-filter: blur(10px);
-    background: linear-gradient(rgba(8, 13, 22, 0.9), rgba(8, 13, 22, 0.6));
+    backdrop-filter: blur(6px);
+    background: rgba(10, 13, 18, 0.78);
     border-bottom: 1px solid var(--border-0);
   }
 
@@ -35,19 +39,26 @@ const path = Astro.url.pathname;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 72px;
+    min-height: 64px;
     gap: var(--space-4);
   }
 
   .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.62rem;
     text-decoration: none;
     font-family: var(--font-mono);
-    font-size: 0.88rem;
-    letter-spacing: 0.08em;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    color: var(--text-0);
   }
 
-  .brand span {
-    color: var(--accent-0);
+  .brand :global(.brand-mark) {
+    width: 1.2rem;
+    height: auto;
+    color: var(--brand-mark);
+    filter: drop-shadow(0 0 8px rgba(127, 179, 255, 0.22));
   }
 
   ul {
@@ -62,16 +73,19 @@ const path = Astro.url.pathname;
   li a {
     text-decoration: none;
     color: var(--text-2);
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     font-family: var(--font-mono);
-    transition: color 0.2s ease;
+    padding: 0.12rem 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
   }
 
   li a:hover,
   li a.active {
     color: var(--text-0);
+    border-bottom-color: var(--border-1);
   }
 
   @media (max-width: 760px) {

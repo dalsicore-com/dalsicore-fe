@@ -1,39 +1,40 @@
 :root {
   color-scheme: dark;
 
-  --bg-0: #06090f;
-  --bg-1: #0b1019;
-  --surface-0: rgba(18, 25, 39, 0.7);
-  --surface-1: rgba(20, 30, 47, 0.95);
-  --surface-2: #111a2a;
-  --border-0: rgba(134, 162, 195, 0.22);
-  --border-1: rgba(164, 188, 216, 0.34);
-  --text-0: #e9efff;
-  --text-1: #b7c6df;
-  --text-2: #8ea2c2;
-  --accent-0: #73d4ff;
-  --accent-1: #9ce9ff;
-  --accent-2: #67f0ca;
+  --bg-0: #0a0c10;
+  --bg-1: #0d1117;
+  --surface-0: rgba(16, 20, 28, 0.76);
+  --surface-1: rgba(18, 23, 32, 0.92);
+  --surface-2: #151b24;
+  --border-0: rgba(148, 160, 182, 0.2);
+  --border-1: rgba(166, 179, 202, 0.34);
+  --text-0: #eef2f8;
+  --text-1: #b7c0d1;
+  --text-2: #909bae;
+  --accent-0: #7fb3ff;
+  --accent-1: #a9ccff;
+  --accent-2: #7fd5c2;
+  --brand-mark: #94bfff;
   --danger: #ff6f91;
 
-  --shadow-0: 0 16px 60px rgba(3, 8, 15, 0.55);
+  --shadow-0: 0 10px 30px rgba(0, 0, 0, 0.24);
 
   --space-1: 0.35rem;
   --space-2: 0.6rem;
   --space-3: 0.9rem;
   --space-4: 1.25rem;
   --space-5: 1.7rem;
-  --space-6: 2.4rem;
-  --space-7: 3.2rem;
-  --space-8: 4.8rem;
+  --space-6: 2.2rem;
+  --space-7: 3rem;
+  --space-8: 4.2rem;
 
-  --radius-1: 8px;
-  --radius-2: 14px;
-  --radius-3: 20px;
+  --radius-1: 6px;
+  --radius-2: 10px;
+  --radius-3: 14px;
 
-  --max-content: 1150px;
+  --max-content: 980px;
 
-  --font-sans: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-sans: "Manrope", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "Consolas", monospace;
-  --font-serif: "Newsreader", "Georgia", serif;
+  --font-serif: "Manrope", "Segoe UI", sans-serif;
 }

@@ -6,17 +6,33 @@ interface Props {
   title: string;
   excerpt: string;
   publishedAt: Date;
+  author: string;
   tags?: string[];
+  sourceUrl?: string;
 }
 
-const { title, excerpt, publishedAt, tags = [] } = Astro.props;
+const { title, excerpt, publishedAt, author, tags = [], sourceUrl } = Astro.props;
 ---
 
-<BaseLayout title={`${title} | Dalsicore Blog`} description={excerpt}>
+<BaseLayout
+  title={`${title} | Dalsicore Blog`}
+  description={excerpt}
+  canonicalUrl={sourceUrl}
+  ogType="article"
+  publishedTime={publishedAt.toISOString()}
+  author={author}
+>
   <article class="container section post">
     <p class="eyebrow reveal">Journal Entry</p>
     <h1 class="section-title reveal delay-1">{title}</h1>
-    <p class="meta reveal delay-2">{formatDate(publishedAt)}</p>
+    <p class="meta reveal delay-2">Diposting pada {formatDate(publishedAt)} oleh {author}</p>
+    {
+      sourceUrl && (
+        <a href={sourceUrl} class="to-medium reveal delay-2" target="_blank" rel="noopener noreferrer">
+          Baca di Medium
+        </a>
+      )
+    }
     {
       tags.length > 0 && (
         <div class="tags reveal delay-2">
@@ -44,6 +60,38 @@ const { title, excerpt, publishedAt, tags = [] } = Astro.props;
     font-size: 0.85rem;
   }
 
+  .to-medium {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: var(--space-2);
+    border: 1px solid rgba(127, 179, 255, 0.6);
+    border-radius: 8px;
+    padding: 0.45rem 0.78rem;
+    background: linear-gradient(180deg, rgba(127, 179, 255, 0.17), rgba(127, 179, 255, 0.09));
+    color: var(--accent-1);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease, background 0.16s ease;
+  }
+
+  .to-medium::after {
+    content: "↗";
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+
+  .to-medium:hover {
+    border-color: var(--accent-0);
+    color: var(--text-0);
+    background: linear-gradient(180deg, rgba(127, 179, 255, 0.24), rgba(127, 179, 255, 0.12));
+    transform: translateY(-1px);
+  }
+
   .tags {
     margin-top: var(--space-3);
     display: flex;
@@ -67,8 +115,58 @@ const { title, excerpt, publishedAt, tags = [] } = Astro.props;
     color: var(--text-1);
   }
 
+  .content :global(pre) {
+    margin: var(--space-4) 0;
+    padding: var(--space-4);
+    overflow-x: auto;
+    border: 1px solid var(--border-0);
+    border-radius: var(--radius-1);
+    background: rgba(0, 0, 0, 0.28);
+    max-width: 100%;
+  }
+
   .content :global(code) {
     font-family: var(--font-mono);
+    color: var(--accent-1);
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
+    display: inline;
+  }
+
+  .content :global(pre code) {
+    display: block;
+    color: var(--text-0);
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+    min-width: max-content;
+    line-height: 1.45;
+  }
+
+  .content :global(p code),
+  .content :global(li code) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .content :global(img) {
+    border-radius: var(--radius-1);
+    margin: var(--space-4) 0;
+    height: auto;
+  }
+
+  .content :global(figure) {
+    margin: var(--space-4) 0;
+  }
+
+  .content :global(figcaption) {
+    margin-top: var(--space-2);
+    color: var(--text-2);
+    font-size: 0.85rem;
+  }
+
+  .content :global(a) {
     color: var(--accent-1);
   }
 

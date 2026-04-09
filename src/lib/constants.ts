@@ -5,6 +5,8 @@ export const SITE = {
   url: "https://dalsicore.dev"
 };
 
+export const BLOG_SOURCE: "markdown" | "medium" = "markdown";
+
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/portfolio", label: "Portfolio" },

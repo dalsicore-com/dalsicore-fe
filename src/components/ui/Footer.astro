@@ -1,6 +1,13 @@
+---
+import BrandMark from "./BrandMark.astro";
+---
+
 <footer class="footer">
   <div class="container content">
-    <span>Dalsicore.</span>
+    <span class="brand-chip">
+      <BrandMark />
+      <span>Dalsicore.</span>
+    </span>
     <span>Research and innovation. © {new Date().getFullYear()}</span>
   </div>
 </footer>
@@ -9,7 +16,7 @@
   .footer {
     margin-top: var(--space-7);
     border-top: 1px solid var(--border-0);
-    padding-block: var(--space-4);
+    padding-block: var(--space-5);
   }
 
   .content {
@@ -19,9 +26,23 @@
     gap: var(--space-3);
     color: var(--text-2);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+  }
+
+  .brand-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    color: var(--text-1);
+  }
+
+  .brand-chip :global(.brand-mark) {
+    width: 0.95rem;
+    height: auto;
+    color: var(--brand-mark);
+    filter: drop-shadow(0 0 6px rgba(127, 179, 255, 0.18));
   }
 
   @media (max-width: 760px) {
