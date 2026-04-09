@@ -1,0 +1,70 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  status: string;
+  stack: string[];
+}
+
+const { href, title, summary, status, stack = [] } = Astro.props;
+---
+
+<a class="card surface" href={href}>
+  <div class="top">
+    <h3>{title}</h3>
+    <span>{status}</span>
+  </div>
+  <p>{summary}</p>
+  <div class="tags">
+    {stack.map((item) => <span class="tag">{item}</span>)}
+  </div>
+</a>
+
+<style>
+  .card {
+    text-decoration: none;
+    padding: var(--space-5);
+    display: grid;
+    gap: var(--space-3);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-0);
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  .top span {
+    color: var(--accent-2);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-1);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+</style>

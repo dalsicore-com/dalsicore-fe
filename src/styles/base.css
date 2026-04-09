@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--text-0);
+  line-height: 1.6;
+  background:
+    radial-gradient(circle at 85% -10%, rgba(115, 212, 255, 0.22), transparent 42%),
+    radial-gradient(circle at 12% 12%, rgba(103, 240, 202, 0.12), transparent 32%),
+    linear-gradient(170deg, var(--bg-0), var(--bg-1));
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  width: min(var(--max-content), calc(100% - 2.5rem));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: var(--space-8);
+}
+
+.section-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-4);
+  color: var(--accent-1);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.muted {
+  color: var(--text-1);
+}
+
+.surface {
+  background: linear-gradient(150deg, rgba(27, 39, 59, 0.8), rgba(13, 20, 33, 0.85));
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-2);
+  box-shadow: var(--shadow-0);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border-1);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding-block: 4rem;
+  }
+
+  .container {
+    width: min(var(--max-content), calc(100% - 1.5rem));
+  }
+}

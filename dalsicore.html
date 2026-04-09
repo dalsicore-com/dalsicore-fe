@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dalsicore — Software Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0b0b;
+    --surface: #111111;
+    --border: #1e1e1e;
+    --border-light: #2a2a2a;
+    --text: #e8e4dc;
+    --text-dim: #6b6560;
+    --text-mid: #9b9590;
+    --accent: #c8b89a;
+    --accent-glow: #c8b89a20;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 30px; height: 30px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 50px; height: 50px;
+    opacity: 0.2;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.022;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    border-color: var(--border);
+    background: rgba(11,11,11,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* SECTIONS */
+  section { position: relative; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 8vw, 7.5rem);
+    line-height: 1.0;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    max-width: 16ch;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.35s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    margin-top: 2.5rem;
+    max-width: 42ch;
+    color: var(--text-mid);
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s forwards;
+  }
+  .hero-bottom {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.65s forwards;
+  }
+  .hero-stat {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .hero-stat strong {
+    display: block;
+    font-size: 28px;
+    color: var(--text);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    font-family: var(--serif);
+    margin-bottom: 4px;
+  }
+  .hero-scroll {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .hero-scroll::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--text-dim);
+  }
+
+  /* Diagonal line decoration */
+  .hero-line {
+    position: absolute;
+    top: 0; right: 15%;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--border) 30%, var(--border) 70%, transparent);
+  }
+  .hero-line-label {
+    position: absolute;
+    top: 50%;
+    right: 15%;
+    transform: translateX(16px) translateY(-50%);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--border-light);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 8rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-top: 0.4rem;
+  }
+  .about-body h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+  .about-body h2 em { font-style: italic; color: var(--accent); }
+  .about-body p {
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.8;
+    max-width: 52ch;
+    margin-bottom: 1.2rem;
+  }
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    border: 1px solid var(--border-light);
+    padding: 0.35rem 0.75rem;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* PROJECTS */
+  #projects {
+    padding: 8rem 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+  }
+  .projects-header h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+  }
+  .section-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+  }
+  .project-list { display: flex; flex-direction: column; }
+  .project-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 3rem;
+    align-items: start;
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+    position: relative;
+    cursor: none;
+  }
+  .project-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent-glow);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-item:hover::after { opacity: 1; }
+  .project-item:hover .project-num { color: var(--accent); }
+  .project-item:hover .project-arrow { transform: translate(4px, -4px); }
+  .project-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    padding-top: 0.4rem;
+    transition: color 0.2s;
+  }
+  .project-info {}
+  .project-name {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 400;
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+  .project-desc {
+    color: var(--text-mid);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 52ch;
+    margin-bottom: 1rem;
+  }
+  .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .project-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+  .project-status {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-top: 0.5rem;
+    white-space: nowrap;
+  }
+  .project-status.active { color: #7ec89a; }
+  .project-status.active::before {
+    content: '●  ';
+    animation: blink 2s infinite;
+  }
+  .project-arrow {
+    font-size: 18px;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+    transition: transform 0.2s;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  /* RESEARCH */
+  #research {
+    padding: 8rem 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .research-card {
+    margin-top: 4rem;
+    border: 1px solid var(--border);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.3s;
+  }
+  .research-card:hover { border-color: var(--accent); }
+  .research-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s;
+  }
+  .research-card:hover::before { transform: scaleX(1); }
+  .research-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .research-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  .research-title em { font-style: italic; color: var(--accent); }
+  .research-body {
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.8;
+    max-width: 60ch;
+    margin-bottom: 2rem;
+  }
+  .research-meta {
+    display: flex;
+    gap: 3rem;
+  }
+  .research-meta-item {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .research-meta-item strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 2px;
+    font-family: var(--sans);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .research-bg-text {
+    position: absolute;
+    right: 3rem; bottom: 2rem;
+    font-family: var(--serif);
+    font-size: 9rem;
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.025;
+    user-select: none;
+    line-height: 1;
+  }
+
+  /* BLOG */
+  #blog {
+    padding: 8rem 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 4rem;
+    border: 1px solid var(--border);
+  }
+  .blog-card {
+    padding: 2.5rem;
+    border-right: 1px solid var(--border);
+    cursor: none;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .blog-card:last-child { border-right: none; }
+  .blog-card:hover { background: var(--surface); }
+  .blog-date {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .blog-title {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+  .blog-excerpt {
+    font-size: 13px;
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .blog-read {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+  .blog-empty {
+    grid-column: 1 / -1;
+    padding: 5rem 2.5rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  /* CONTACT */
+  #contact {
+    padding: 8rem 4rem;
+  }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  .contact-left h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .contact-left h2 em { font-style: italic; color: var(--accent); }
+  .contact-left p {
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.8;
+    max-width: 40ch;
+  }
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 3rem;
+  }
+  .contact-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 300;
+    transition: color 0.2s;
+    cursor: none;
+  }
+  .contact-link:last-child { border-bottom: 1px solid var(--border); }
+  .contact-link:hover { color: var(--accent); }
+  .contact-link-arrow { font-size: 16px; transition: transform 0.2s; }
+  .contact-link:hover .contact-link-arrow { transform: translate(3px, -3px); }
+  .contact-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2.5rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { padding: 0 1.5rem 4rem; }
+    #about { padding: 5rem 1.5rem; grid-template-columns: 1fr; gap: 2rem; }
+    #projects { padding: 5rem 1.5rem; }
+    #research { padding: 5rem 1.5rem; }
+    #blog { padding: 5rem 1.5rem; }
+    #contact { padding: 5rem 1.5rem; }
+    .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .blog-grid { grid-template-columns: 1fr; }
+    .blog-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .project-item { grid-template-columns: 50px 1fr; }
+    .project-arrow { display: none; }
+    footer { padding: 2rem 1.5rem; }
+    .research-bg-text { font-size: 5rem; }
+    .hero-line, .hero-line-label { display: none; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
+    .research-meta { flex-direction: column; gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Dalsicore<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-line"></div>
+  <div class="hero-line-label">Est. 2024</div>
+
+  <p class="hero-eyebrow">Software Studio</p>
+  <h1 class="hero-title">
+    Building apps<br>that <em>matter.</em>
+  </h1>
+  <p class="hero-sub">
+    Dalsicore is a small independent software studio focused on mobile applications — crafted with intent, shipped with care.
+  </p>
+
+  <div class="hero-bottom">
+    <div style="display:flex;gap:3rem;">
+      <div class="hero-stat">
+        <strong>2</strong>
+        Active Projects
+      </div>
+      <div class="hero-stat">
+        <strong>1</strong>
+        Research Study
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll to explore</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label reveal">About</div>
+  <div class="about-body reveal">
+    <h2>One studio, <em>focused work.</em></h2>
+    <p>
+      Dalsicore is an independent software studio run by a single developer with a research-driven mindset. We build mobile applications that solve real problems — no bloat, no excess.
+    </p>
+    <p>
+      Every project starts with a question: does this actually help someone? If yes, we build it right.
+    </p>
+    <div class="about-tags">
+      <span class="tag">Android Native</span>
+      <span class="tag">Kotlin</span>
+      <span class="tag">Jetpack Compose</span>
+      <span class="tag">Vue.js</span>
+      <span class="tag">AI / ML</span>
+      <span class="tag">Research</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header reveal">
+    <h2 class="section-serif">Projects</h2>
+    <span class="section-count">02 total</span>
+  </div>
+
+  <div class="project-list">
+    <!-- Aquri -->
+    <a href="#" class="project-item reveal">
+      <div class="project-num">01</div>
+      <div class="project-info">
+        <div class="project-name">Aquri</div>
+        <div class="project-desc">
+          A native Android hydration tracker with gamification — streak systems, badges, and smart reminders powered by on-device AI to learn your drinking habits.
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Android</span>
+          <span class="project-tag">Kotlin</span>
+          <span class="project-tag">On-Device AI</span>
+          <span class="project-tag">Gamification</span>
+        </div>
+      </div>
+      <div>
+        <div class="project-status active">In Development</div>
+        <div class="project-arrow">↗</div>
+      </div>
+    </a>
+
+    <!-- Dalsilens -->
+    <a href="#research" class="project-item reveal">
+      <div class="project-num">02</div>
+      <div class="project-info">
+        <div class="project-name">Dalsilens</div>
+        <div class="project-desc">
+          A visual aid application for individuals with dichromacy — helping users perceive and interpret colors more accurately through adaptive image processing.
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">Research</span>
+          <span class="project-tag">Accessibility</span>
+          <span class="project-tag">Computer Vision</span>
+        </div>
+      </div>
+      <div>
+        <div class="project-status">Research Phase</div>
+        <div class="project-arrow">↗</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="projects-header reveal">
+    <h2>Research</h2>
+    <span class="section-count">01 study</span>
+  </div>
+
+  <div class="research-card reveal">
+    <div class="research-eyebrow">Active Study · Visual Accessibility</div>
+    <div class="research-title">
+      Dalsilens — <em>Visual Aid<br>for Dichromacy</em>
+    </div>
+    <p class="research-body">
+      A research project exploring how software can assist individuals with dichromacy (a form of color vision deficiency) in perceiving and distinguishing colors. Dalsilens investigates real-time image processing techniques to remap color information in a way that aligns with how dichromatic users see the world.
+    </p>
+    <div class="research-meta">
+      <div class="research-meta-item">
+        <strong>Visual Accessibility</strong>
+        Field
+      </div>
+      <div class="research-meta-item">
+        <strong>Ongoing</strong>
+        Status
+      </div>
+      <div class="research-meta-item">
+        <strong>Android / CV</strong>
+        Platform
+      </div>
+    </div>
+    <div class="research-bg-text">D.</div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog">
+  <div class="projects-header reveal">
+    <h2>Blog</h2>
+    <span class="section-count">Coming soon</span>
+  </div>
+
+  <div class="blog-grid reveal">
+    <div class="blog-empty">
+      — Writing in progress. Check back soon. —
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <div class="contact-left">
+      <h2>Let's <em>connect.</em></h2>
+      <p>
+        Have a project in mind, want to collaborate, or just curious about what we're building? Reach out.
+      </p>
+    </div>
+    <div>
+      <div class="contact-links">
+        <a href="mailto:hello@dalsicore.dev" class="contact-link">
+          <div>
+            <div class="contact-label">Email</div>
+            hello@dalsicore.dev
+          </div>
+          <span class="contact-link-arrow">↗</span>
+        </a>
+        <a href="https://github.com/dalsicore" class="contact-link" target="_blank">
+          <div>
+            <div class="contact-label">GitHub</div>
+            github.com/dalsicore
+          </div>
+          <span class="contact-link-arrow">↗</span>
+        </a>
+        <a href="#" class="contact-link">
+          <div>
+            <div class="contact-label">Location</div>
+            Indonesia
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Dalsicore.</span>
+  <span class="footer-copy">© 2024 — All rights reserved</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Stagger children if needed
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

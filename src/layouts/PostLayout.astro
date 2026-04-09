@@ -1,0 +1,80 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { formatDate } from "../lib/date";
+
+interface Props {
+  title: string;
+  excerpt: string;
+  publishedAt: Date;
+  tags?: string[];
+}
+
+const { title, excerpt, publishedAt, tags = [] } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Dalsicore Blog`} description={excerpt}>
+  <article class="container section post">
+    <p class="eyebrow reveal">Journal Entry</p>
+    <h1 class="section-title reveal delay-1">{title}</h1>
+    <p class="meta reveal delay-2">{formatDate(publishedAt)}</p>
+    {
+      tags.length > 0 && (
+        <div class="tags reveal delay-2">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )
+    }
+    <div class="content surface reveal delay-3">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: 860px;
+  }
+
+  .meta {
+    margin-top: var(--space-3);
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+
+  .tags {
+    margin-top: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .content {
+    margin-top: var(--space-6);
+    padding: var(--space-7);
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+    line-height: 1.2;
+  }
+
+  .content :global(p),
+  .content :global(li) {
+    color: var(--text-1);
+  }
+
+  .content :global(code) {
+    font-family: var(--font-mono);
+    color: var(--accent-1);
+  }
+
+  @media (max-width: 900px) {
+    .content {
+      padding: var(--space-5);
+    }
+  }
+</style>

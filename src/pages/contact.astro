@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Contact | Dalsicore" description="Connect with Dalsicore for collaborations and opportunities.">
+  <section class="section container">
+    <h1 class="section-title reveal delay-1">Contact</h1>
+    <p class="muted intro reveal delay-2">
+        Whether you have questions about our research, or want to give feedback on our apps, feel free to reach out and get in touch.
+    </p>
+
+    <div class="cards reveal delay-3">
+      <a class="surface card" href="mailto:hello@dalsicore.com">
+        <h2>Email</h2>
+        <p>hello@dalsicore.com</p>
+      </a>
+      <a class="surface card" href="https://github.com/dalsicore" target="_blank" rel="noreferrer">
+        <h2>GitHub</h2>
+        <p>github.com/dalsicore</p>
+      </a>
+      <div class="surface card">
+        <h2>Location</h2>
+        <p>Indonesia</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+
+  .cards {
+    margin-top: var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .card {
+    padding: var(--space-5);
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .card:hover {
+    border-color: var(--accent-0);
+    transform: translateY(-2px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  p {
+    margin: var(--space-2) 0 0;
+    color: var(--text-1);
+  }
+
+  @media (max-width: 900px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

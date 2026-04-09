@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/portfolio/ProjectCard.astro";
+
+const projects = (await getCollection("portfolio")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Portfolio | Dalsicore" description="Mobile products and experiments by Dalsicore.">
+  <section class="section container">
+    <p class="eyebrow reveal">Product Showcase</p>
+    <h1 class="section-title reveal delay-1">Portfolio</h1>
+    <p class="muted intro reveal delay-2">
+        A growing collection of apps and experiments that combine technical depth with real-world user impact.
+    </p>
+    <div class="grid reveal delay-3">
+      {
+        projects.map((entry) => (
+          <ProjectCard
+            href={`/portfolio/${entry.slug}`}
+            title={entry.data.title}
+            summary={entry.data.summary}
+            status={entry.data.status.replace("-", " ")}
+            stack={entry.data.stack}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-top: var(--space-3);
+    max-width: 62ch;
+  }
+
+  .grid {
+    margin-top: var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

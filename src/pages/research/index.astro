@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ResearchCard from "../../components/research/ResearchCard.astro";
+
+const projects = (await getCollection("research")).sort((a, b) => {
+  const aDate = a.data.publishedAt?.getTime() ?? 0;
+  const bDate = b.data.publishedAt?.getTime() ?? 0;
+  return bDate - aDate;
+});
+---
+
+<BaseLayout title="Research | Dalsicore" description="Applied research and experimental from Dalsicore.">
+  <section class="section container">
+    <p class="eyebrow reveal">Experiments & Research</p>
+    <h1 class="section-title reveal delay-1">Research</h1>
+    <p class="muted intro reveal delay-2">
+        A collection of ongoing and upcoming work, experimentation, and building things to see what actually works.
+    </p>
+    <div class="grid reveal delay-3">
+      {
+        projects.map((entry) => (
+          <ResearchCard
+            href={`/research/${entry.slug}`}
+            title={entry.data.title}
+            abstract={entry.data.abstract}
+            field={entry.data.field}
+            status={entry.data.status}
+            platform={entry.data.platform}
+            tags={entry.data.tags}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-top: var(--space-3);
+    max-width: 64ch;
+  }
+
+  .grid {
+    margin-top: var(--space-5);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+</style>

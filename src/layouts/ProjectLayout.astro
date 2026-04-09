@@ -1,0 +1,84 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  tagline: string;
+  summary: string;
+  stack: string[];
+  status: string;
+}
+
+const { title, tagline, summary, stack = [], status } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Dalsicore`} description={summary}>
+  <article class="container section entry">
+    <p class="eyebrow reveal">Product Entry</p>
+    <h1 class="section-title reveal delay-1">{title}</h1>
+    <p class="tagline reveal delay-2">{tagline}</p>
+    <p class="status reveal delay-2">Status: <span>{status}</span></p>
+    <div class="tags reveal delay-3">
+      {stack.map((item) => (
+        <span class="tag">{item}</span>
+      ))}
+    </div>
+    <div class="content surface reveal delay-3">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .entry {
+    max-width: 920px;
+  }
+
+  .tagline {
+    margin-top: var(--space-4);
+    color: var(--text-0);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+  }
+
+  .status {
+    margin-top: var(--space-3);
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .status span {
+    color: var(--accent-2);
+  }
+
+  .tags {
+    margin-top: var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .content {
+    margin-top: var(--space-6);
+    padding: var(--space-7);
+  }
+
+  .content :global(p),
+  .content :global(li) {
+    color: var(--text-1);
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+    line-height: 1.2;
+  }
+
+  @media (max-width: 900px) {
+    .content {
+      padding: var(--space-5);
+    }
+  }
+</style>

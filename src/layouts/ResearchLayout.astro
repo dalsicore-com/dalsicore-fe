@@ -1,0 +1,114 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  abstract: string;
+  field: string;
+  status: string;
+  platform: string;
+  tags?: string[];
+}
+
+const { title, abstract, field, status, platform, tags = [] } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Dalsicore Research`} description={abstract}>
+  <article class="container section entry">
+    <p class="eyebrow reveal">Research Brief</p>
+    <h1 class="section-title reveal delay-1">{title}</h1>
+    <p class="abstract reveal delay-2">{abstract}</p>
+    <dl class="meta reveal delay-2 surface">
+      <div>
+        <dt>Field</dt>
+        <dd>{field}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{status}</dd>
+      </div>
+      <div>
+        <dt>Platform</dt>
+        <dd>{platform}</dd>
+      </div>
+    </dl>
+    {
+      tags.length > 0 && (
+        <div class="tags reveal delay-3">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )
+    }
+    <div class="content surface reveal delay-3">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .entry {
+    max-width: 980px;
+  }
+
+  .abstract {
+    margin-top: var(--space-4);
+    color: var(--text-1);
+    max-width: 72ch;
+  }
+
+  .meta {
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  dt {
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: var(--space-1) 0 0;
+    color: var(--text-0);
+  }
+
+  .tags {
+    margin-top: var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .content {
+    margin-top: var(--space-6);
+    padding: var(--space-7);
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+    line-height: 1.2;
+  }
+
+  .content :global(p),
+  .content :global(li) {
+    color: var(--text-1);
+  }
+
+  @media (max-width: 900px) {
+    .meta {
+      grid-template-columns: 1fr;
+    }
+
+    .content {
+      padding: var(--space-5);
+    }
+  }
+</style>

@@ -1,0 +1,90 @@
+---
+import { NAV_LINKS } from "../../lib/constants";
+
+const path = Astro.url.pathname;
+---
+
+<header class="nav-wrap">
+  <nav class="container nav">
+    <a class="brand" href="/">Dalsicore<span>.</span></a>
+    <ul>
+      {
+        NAV_LINKS.map((item) => (
+          <li>
+            <a href={item.href} class={path === item.href ? "active" : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .nav-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(rgba(8, 13, 22, 0.9), rgba(8, 13, 22, 0.6));
+    border-bottom: 1px solid var(--border-0);
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 72px;
+    gap: var(--space-4);
+  }
+
+  .brand {
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+  }
+
+  .brand span {
+    color: var(--accent-0);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  li a {
+    text-decoration: none;
+    color: var(--text-2);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    transition: color 0.2s ease;
+  }
+
+  li a:hover,
+  li a.active {
+    color: var(--text-0);
+  }
+
+  @media (max-width: 760px) {
+    .nav {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-block: var(--space-3);
+    }
+
+    ul {
+      width: 100%;
+      flex-wrap: wrap;
+      gap: var(--space-2) var(--space-4);
+    }
+  }
+</style>

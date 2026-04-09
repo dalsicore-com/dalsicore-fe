@@ -1,0 +1,111 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/home/Hero.astro";
+import ProjectCard from "../components/portfolio/ProjectCard.astro";
+import BlogCard from "../components/blog/BlogCard.astro";
+import ResearchCard from "../components/research/ResearchCard.astro";
+
+const portfolio = (await getCollection("portfolio"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 2);
+
+const blog = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 2);
+
+const research = (await getCollection("research")).slice(0, 1);
+---
+
+<BaseLayout title="Dalsicore | Product + Research Studio">
+  <Hero />
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow reveal">What Dalsicore Builds</p>
+      <h2 class="section-title reveal delay-1">Portfolio</h2>
+      <p class="muted intro reveal delay-2">
+          Android apps, experiments, and prototypes built to turn ideas into something people can actually use.
+      </p>
+      <div class="grid reveal delay-3">
+        {
+          portfolio.map((entry) => (
+            <ProjectCard
+              href={`/portfolio/${entry.slug}`}
+              title={entry.data.title}
+              summary={entry.data.summary}
+              status={entry.data.status.replace("-", " ")}
+              stack={entry.data.stack}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow reveal">Research Direction</p>
+      <h2 class="section-title reveal delay-1">Applied Research</h2>
+      <div class="grid single reveal delay-2">
+        {
+          research.map((entry) => (
+            <ResearchCard
+              href={`/research/${entry.slug}`}
+              title={entry.data.title}
+              abstract={entry.data.abstract}
+              field={entry.data.field}
+              status={entry.data.status}
+              platform={entry.data.platform}
+              tags={entry.data.tags}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow reveal">Blog</p>
+      <h2 class="section-title reveal delay-1">Latest Writing</h2>
+      <div class="grid reveal delay-2">
+        {
+          blog.map((entry) => (
+            <BlogCard
+              href={`/blog/${entry.slug}`}
+              title={entry.data.title}
+              excerpt={entry.data.excerpt}
+              publishedAt={entry.data.publishedAt}
+              tags={entry.data.tags}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-top: var(--space-3);
+    max-width: 64ch;
+  }
+
+  .grid {
+    margin-top: var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .grid.single {
+    grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

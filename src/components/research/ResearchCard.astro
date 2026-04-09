@@ -1,0 +1,101 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  abstract: string;
+  field: string;
+  status: string;
+  platform: string;
+  tags?: string[];
+}
+
+const { href, title, abstract, field, status, platform, tags = [] } = Astro.props;
+---
+
+<a class="card surface" href={href}>
+  <h3>{title}</h3>
+  <p>{abstract}</p>
+  <dl>
+    <div>
+      <dt>Field</dt>
+      <dd>{field}</dd>
+    </div>
+    <div>
+      <dt>Status</dt>
+      <dd>{status}</dd>
+    </div>
+    <div>
+      <dt>Platform</dt>
+      <dd>{platform}</dd>
+    </div>
+  </dl>
+  {
+    tags.length > 0 && (
+      <div class="tags">
+        {tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    )
+  }
+</a>
+
+<style>
+  .card {
+    text-decoration: none;
+    padding: var(--space-5);
+    display: grid;
+    gap: var(--space-4);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-0);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-1);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  dt {
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: var(--space-1) 0 0;
+    color: var(--text-0);
+    font-size: 0.95rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  @media (max-width: 860px) {
+    dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
