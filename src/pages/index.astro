@@ -63,6 +63,9 @@ const research = (await getCollection("research")).slice(0, 1);
           ))
         }
       </div>
+      <div class="section-cta reveal delay-3">
+        <a href="/portfolio">Explore all projects</a>
+      </div>
     </div>
   </section>
 
@@ -84,6 +87,9 @@ const research = (await getCollection("research")).slice(0, 1);
             />
           ))
         }
+      </div>
+      <div class="section-cta reveal delay-3">
+        <a href="/research">View research stream</a>
       </div>
     </div>
   </section>
@@ -107,6 +113,9 @@ const research = (await getCollection("research")).slice(0, 1);
           ))
         }
       </div>
+      <div class="section-cta reveal delay-3">
+        <a href="/blog">Read more writing</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -126,6 +135,24 @@ const research = (await getCollection("research")).slice(0, 1);
 
   .grid.single {
     grid-template-columns: 1fr;
+  }
+
+  .section-cta {
+    margin-top: var(--space-4);
+  }
+
+  .section-cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    text-decoration: none;
+    color: var(--accent-1);
+    font-weight: 700;
+  }
+
+  .section-cta a::after {
+    content: "↗";
+    font-size: 0.85rem;
   }
 
   @media (max-width: 960px) {

@@ -1,4 +1,9 @@
 <section class="hero section">
+  <div class="hero-orbit" aria-hidden="true">
+    <span class="pulse pulse-a"></span>
+    <span class="pulse pulse-b"></span>
+    <span class="pulse pulse-c"></span>
+  </div>
   <div class="container hero-inner">
     <h1 class="section-title reveal delay-1">
         Dalsicore builds Android apps, explores research, and creates solutions that solve real problems.<br />
@@ -22,11 +27,45 @@
 
 <style>
   .hero {
+    position: relative;
+    overflow: clip;
     padding-top: clamp(3.8rem, 7vw, 6.2rem);
     padding-bottom: var(--space-8);
   }
 
+  .hero-orbit {
+    position: absolute;
+    inset: -10% auto auto -3%;
+    width: min(44vw, 500px);
+    height: min(44vw, 500px);
+    pointer-events: none;
+  }
+
+  .pulse {
+    position: absolute;
+    border: 1px solid rgba(230, 167, 110, 0.25);
+    border-radius: 999px;
+    animation: drift 8s ease-in-out infinite;
+    opacity: 0.4;
+  }
+
+  .pulse-a {
+    inset: 0;
+  }
+
+  .pulse-b {
+    inset: 14%;
+    animation-delay: 0.6s;
+  }
+
+  .pulse-c {
+    inset: 30%;
+    animation-delay: 1.2s;
+  }
+
   .hero-inner {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: var(--space-3);
   }
@@ -49,6 +88,18 @@
     flex-direction: column;
     gap: var(--space-1);
     animation: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stats > div::after {
+    content: "";
+    position: absolute;
+    inset: auto -30% -65% auto;
+    width: 170px;
+    height: 170px;
+    background: radial-gradient(circle, rgba(230, 167, 110, 0.18), transparent 70%);
+    pointer-events: none;
   }
 
   .stats strong {
@@ -64,6 +115,13 @@
   }
 
   @media (max-width: 900px) {
+    .hero-orbit {
+      width: 300px;
+      height: 300px;
+      left: -80px;
+      top: 20px;
+    }
+
     .stats {
       grid-template-columns: 1fr;
     }
