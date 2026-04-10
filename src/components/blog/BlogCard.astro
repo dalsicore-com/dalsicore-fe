@@ -9,12 +9,14 @@ interface Props {
   author: string;
   thumbnail?: string;
   tags?: string[];
+  index?: number;
 }
 
-const { href, title, excerpt, publishedAt, author, thumbnail, tags = [] } = Astro.props;
+const { href, title, excerpt, publishedAt, author, thumbnail, tags = [], index = 0 } = Astro.props;
+const featured = index === 0;
 ---
 
-<a class="card surface" href={href}>
+<a class={`card surface ${index % 2 === 1 ? "offset" : ""} ${featured ? "featured" : ""}`} href={href}>
   {
     thumbnail && (
       <div class="thumb-wrap">
@@ -38,6 +40,8 @@ const { href, title, excerpt, publishedAt, author, thumbnail, tags = [] } = Astr
 
 <style>
   .card {
+    position: relative;
+    overflow: hidden;
     text-decoration: none;
     padding: var(--space-5);
     display: grid;
@@ -45,18 +49,59 @@ const { href, title, excerpt, publishedAt, author, thumbnail, tags = [] } = Astr
     transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
   }
 
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: -50px auto auto -50px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(230, 167, 110, 0.15), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
   .card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     border-color: var(--accent-0);
     background: var(--surface-2);
+    box-shadow: 0 22px 36px rgba(8, 5, 4, 0.36);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card.featured::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(120deg, rgba(230, 167, 110, 0.62), rgba(242, 190, 140, 0.15), rgba(230, 167, 110, 0.62));
+    background-size: 220% 100%;
+    animation: borderFlow 5.5s linear infinite;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card.offset {
+    transform: translateY(14px);
+  }
+
+  .card.offset:hover {
+    transform: translateY(10px);
   }
 
   .meta {
     margin: 0;
     color: var(--text-2);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+    font-weight: 600;
     line-height: 1.5;
   }
 
@@ -93,5 +138,12 @@ const { href, title, excerpt, publishedAt, author, thumbnail, tags = [] } = Astr
     display: flex;
     gap: var(--space-2);
     flex-wrap: wrap;
+  }
+
+  @media (max-width: 960px) {
+    .card.offset,
+    .card.offset:hover {
+      transform: none;
+    }
   }
 </style>

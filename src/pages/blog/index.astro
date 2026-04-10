@@ -54,7 +54,7 @@ const allTags = Array.from(
 
     <div class="grid reveal delay-3">
       {
-        posts.map((entry) => (
+        posts.map((entry, idx) => (
           <BlogCard
             href={`/blog/${entry.slug}`}
             title={entry.title}
@@ -63,6 +63,7 @@ const allTags = Array.from(
             author={entry.author}
             thumbnail={entry.thumbnail}
             tags={entry.tags}
+            index={idx}
           />
         ))
       }

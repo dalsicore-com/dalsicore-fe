@@ -15,13 +15,14 @@ const projects = (await getCollection("portfolio")).sort((a, b) => a.data.order 
     </p>
     <div class="grid reveal delay-3">
       {
-        projects.map((entry) => (
+        projects.map((entry, idx) => (
           <ProjectCard
             href={`/portfolio/${entry.slug}`}
             title={entry.data.title}
             summary={entry.data.summary}
             status={entry.data.status.replace("-", " ")}
             stack={entry.data.stack}
+            index={idx}
           />
         ))
       }

@@ -52,13 +52,14 @@ const research = (await getCollection("research")).slice(0, 1);
       </p>
       <div class="grid reveal delay-3">
         {
-          portfolio.map((entry) => (
+          portfolio.map((entry, idx) => (
             <ProjectCard
               href={`/portfolio/${entry.slug}`}
               title={entry.data.title}
               summary={entry.data.summary}
               status={entry.data.status.replace("-", " ")}
               stack={entry.data.stack}
+              index={idx}
             />
           ))
         }
@@ -100,7 +101,7 @@ const research = (await getCollection("research")).slice(0, 1);
       <h2 class="section-title reveal delay-1">Latest Writing</h2>
       <div class="grid reveal delay-2">
         {
-          blog.map((entry) => (
+          blog.map((entry, idx) => (
             <BlogCard
               href={`/blog/${entry.slug}`}
               title={entry.title}
@@ -109,6 +110,7 @@ const research = (await getCollection("research")).slice(0, 1);
               author={entry.author}
               thumbnail={entry.thumbnail}
               tags={entry.tags}
+              index={idx}
             />
           ))
         }
@@ -145,14 +147,21 @@ const research = (await getCollection("research")).slice(0, 1);
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    padding: 0.16rem 0.1rem;
     text-decoration: none;
     color: var(--accent-1);
     font-weight: 700;
+    transition: transform 0.18s ease, color 0.18s ease;
+    will-change: transform;
   }
 
   .section-cta a::after {
     content: "↗";
     font-size: 0.85rem;
+  }
+
+  .section-cta a:hover {
+    color: var(--text-0);
   }
 
   @media (max-width: 960px) {
@@ -161,3 +170,38 @@ const research = (await getCollection("research")).slice(0, 1);
     }
   }
 </style>
+
+<script>
+  const magneticLinks = Array.from(document.querySelectorAll(".section-cta a"));
+
+  const resetLink = (link) => {
+    link.style.transform = "translate3d(0, 0, 0)";
+  };
+
+  magneticLinks.forEach((link) => {
+    link.addEventListener("mousemove", (event) => {
+      const rect = link.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+      const moveX = Math.max(-8, Math.min(8, x * 0.18));
+      const moveY = Math.max(-6, Math.min(6, y * 0.18));
+      link.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+    });
+
+    link.addEventListener("mouseleave", () => {
+      resetLink(link);
+    });
+  });
+
+  const orbit = document.querySelector("[data-parallax]");
+  if (orbit) {
+    const strength = Number(orbit.getAttribute("data-parallax")) || 0.1;
+    window.addEventListener("mousemove", (event) => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const dx = (event.clientX - centerX) * strength;
+      const dy = (event.clientY - centerY) * strength;
+      orbit.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    });
+  }
+</script>
