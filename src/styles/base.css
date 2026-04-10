@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap");
 
 *,
 *::before,
@@ -20,15 +20,18 @@ body {
   min-height: 100vh;
   font-family: var(--font-sans);
   color: var(--text-0);
-  line-height: 1.58;
-  background: linear-gradient(180deg, var(--bg-0), var(--bg-1));
+  line-height: 1.62;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(230, 167, 110, 0.13), transparent 42%),
+    radial-gradient(circle at 80% 15%, rgba(242, 190, 140, 0.08), transparent 45%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1));
 }
 
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 0.65px, transparent 0.65px);
+  background-image: radial-gradient(rgba(255, 245, 232, 0.06) 0.65px, transparent 0.65px);
   background-size: 3px 3px;
   opacity: 0.03;
   pointer-events: none;
@@ -39,8 +42,8 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255, 233, 208, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 233, 208, 0.03) 1px, transparent 1px);
   background-size: 44px 44px;
   opacity: 0.06;
   mask-image: radial-gradient(circle at center, black 20%, transparent 100%);
@@ -71,7 +74,7 @@ a {
   font-family: var(--font-serif);
   font-size: clamp(1.95rem, 3.8vw, 3rem);
   line-height: 1.14;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.015em;
   max-width: 22ch;
 }
@@ -79,10 +82,10 @@ a {
 .eyebrow {
   margin: 0 0 var(--space-4);
   color: var(--text-2);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .muted {
@@ -102,12 +105,12 @@ a {
   gap: 0.4rem;
   border: 1px solid var(--border-1);
   border-radius: 999px;
-  padding: 0.2rem 0.62rem;
+  padding: 0.24rem 0.68rem;
   color: var(--text-1);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 @media (max-width: 900px) {

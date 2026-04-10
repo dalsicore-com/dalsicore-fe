@@ -2,7 +2,11 @@
 import { NAV_LINKS } from "../../lib/constants";
 import BrandMark from "./BrandMark.astro";
 
-const path = Astro.url.pathname;
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) => {
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
+};
 ---
 
 <header class="nav-wrap">
@@ -15,7 +19,7 @@ const path = Astro.url.pathname;
       {
         NAV_LINKS.map((item) => (
           <li>
-            <a href={item.href} class={path === item.href ? "active" : undefined}>
+            <a href={item.href} class={isActive(item.href) ? "active" : undefined}>
               {item.label}
             </a>
           </li>
@@ -31,7 +35,7 @@ const path = Astro.url.pathname;
     top: 0;
     z-index: 40;
     backdrop-filter: blur(6px);
-    background: rgba(10, 13, 18, 0.78);
+    background: rgba(20, 15, 12, 0.66);
     border-bottom: 1px solid var(--border-0);
   }
 
@@ -48,9 +52,9 @@ const path = Astro.url.pathname;
     align-items: center;
     gap: 0.62rem;
     text-decoration: none;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    letter-spacing: 0.06em;
+    font-family: var(--font-sans);
+    font-size: 0.94rem;
+    letter-spacing: 0.01em;
     color: var(--text-0);
   }
 
@@ -58,7 +62,7 @@ const path = Astro.url.pathname;
     width: 1.2rem;
     height: auto;
     color: var(--brand-mark);
-    filter: drop-shadow(0 0 8px rgba(127, 179, 255, 0.22));
+    filter: drop-shadow(0 0 8px rgba(230, 167, 110, 0.25));
   }
 
   ul {
@@ -73,19 +77,20 @@ const path = Astro.url.pathname;
   li a {
     text-decoration: none;
     color: var(--text-2);
-    font-size: 0.76rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-family: var(--font-mono);
-    padding: 0.12rem 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    padding: 0.2rem 0;
     border-bottom: 1px solid transparent;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
 
   li a:hover,
   li a.active {
-    color: var(--text-0);
-    border-bottom-color: var(--border-1);
+    color: var(--accent-1);
+    border-bottom-color: rgba(234, 180, 128, 0.7);
+    transform: translateY(-1px);
   }
 
   @media (max-width: 760px) {

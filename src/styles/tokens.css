@@ -1,23 +1,23 @@
 :root {
   color-scheme: dark;
 
-  --bg-0: #0a0c10;
-  --bg-1: #0d1117;
-  --surface-0: rgba(16, 20, 28, 0.76);
-  --surface-1: rgba(18, 23, 32, 0.92);
-  --surface-2: #151b24;
-  --border-0: rgba(148, 160, 182, 0.2);
-  --border-1: rgba(166, 179, 202, 0.34);
-  --text-0: #eef2f8;
-  --text-1: #b7c0d1;
-  --text-2: #909bae;
-  --accent-0: #7fb3ff;
-  --accent-1: #a9ccff;
-  --accent-2: #7fd5c2;
-  --brand-mark: #94bfff;
+  --bg-0: #14100d;
+  --bg-1: #1a1310;
+  --surface-0: rgba(41, 31, 26, 0.7);
+  --surface-1: rgba(49, 36, 31, 0.9);
+  --surface-2: #2a1f1a;
+  --border-0: rgba(214, 170, 131, 0.2);
+  --border-1: rgba(227, 187, 149, 0.32);
+  --text-0: #f8eee3;
+  --text-1: #dbc8b3;
+  --text-2: #b49578;
+  --accent-0: #e6a76e;
+  --accent-1: #f2be8c;
+  --accent-2: #d8c08f;
+  --brand-mark: #f0ba85;
   --danger: #ff6f91;
 
-  --shadow-0: 0 10px 30px rgba(0, 0, 0, 0.24);
+  --shadow-0: 0 14px 36px rgba(8, 5, 4, 0.32);
 
   --space-1: 0.35rem;
   --space-2: 0.6rem;
@@ -34,7 +34,7 @@
 
   --max-content: 980px;
 
-  --font-sans: "Manrope", "Segoe UI", sans-serif;
+  --font-sans: "Nunito Sans", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "Consolas", monospace;
-  --font-serif: "Manrope", "Segoe UI", sans-serif;
+  --font-serif: "Nunito Sans", "Segoe UI", sans-serif;
 }
