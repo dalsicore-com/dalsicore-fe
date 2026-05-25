@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Substracker — Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141417;
+    --surface2: #1c1c21;
+    --border: #2a2a32;
+    --accent: #7c6af5;
+    --accent-soft: rgba(124, 106, 245, 0.12);
+    --accent-glow: rgba(124, 106, 245, 0.25);
+    --text: #e8e8ed;
+    --text-muted: #7a7a8c;
+    --text-faint: #3f3f52;
+    --green: #4ade80;
+    --green-soft: rgba(74, 222, 128, 0.1);
+    --red: #f87171;
+    --red-soft: rgba(248, 113, 113, 0.1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── LAYOUT ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 60px 0 48px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .brand-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .brand-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    color: var(--text);
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .meta-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .meta-chip.compliance {
+    color: var(--green);
+    background: var(--green-soft);
+    border-color: rgba(74, 222, 128, 0.25);
+  }
+
+  /* ── TAB NAV ── */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  /* ── CONTENT SECTIONS ── */
+  .tab-content { display: none; animation: fadeUp 0.4s ease both; }
+  .tab-content.active { display: block; }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+
+  .toc-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .toc ol {
+    list-style: none;
+    counter-reset: toc-counter;
+  }
+
+  .toc ol li {
+    counter-increment: toc-counter;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 3px 0;
+  }
+
+  .toc ol li::before {
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    min-width: 20px;
+  }
+
+  .toc ol li a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s;
+  }
+
+  .toc ol li a:hover { color: var(--accent); }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid rgba(124, 106, 245, 0.3);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .section p {
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    font-size: 14.5px;
+    line-height: 1.8;
+  }
+
+  .section p:last-child { margin-bottom: 0; }
+
+  /* ── DATA TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13.5px;
+  }
+
+  .data-table thead tr {
+    background: var(--surface2);
+  }
+
+  .data-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+
+  .data-table tr:hover td { background: var(--surface); }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 20px 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .callout-info {
+    background: var(--accent-soft);
+    border: 1px solid rgba(124, 106, 245, 0.25);
+    color: #a8a0f5;
+  }
+
+  .callout-warn {
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    color: #d4a847;
+  }
+
+  .callout-gdpr {
+    background: var(--green-soft);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    color: #6ee89a;
+  }
+
+  .callout-icon {
+    font-size: 14px;
+    margin-right: 6px;
+  }
+
+  .callout strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── LIST ── */
+  .styled-list {
+    list-style: none;
+    margin: 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .styled-list li {
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .styled-list li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  /* ── THIRD PARTY GRID ── */
+  .third-party-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .third-party-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+
+  .third-party-card:hover { border-color: var(--accent); }
+
+  .third-party-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .third-party-purpose {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .third-party-link {
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .third-party-link:hover { text-decoration: underline; }
+
+  /* ── RIGHTS GRID ── */
+  .rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .right-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .right-card .right-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .right-card p {
+    font-size: 12.5px !important;
+    margin: 0 !important;
+  }
+
+  /* ── CONTACT BOX ── */
+  .contact-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .contact-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    min-width: 60px;
+  }
+
+  .contact-value {
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .contact-value a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .footer-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-faint);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover { color: var(--text-muted); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .wrapper { padding: 0 16px 60px; }
+    header { padding: 40px 0 32px; }
+    .tab-btn { font-size: 13px; padding: 8px 10px; }
+    .third-party-grid { grid-template-columns: 1fr; }
+    .rights-grid { grid-template-columns: 1fr 1fr; }
+    .data-table { font-size: 12px; }
+    .data-table th, .data-table td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">📋</div>
+      <span class="brand-name">Substracker</span>
+    </div>
+    <h1>Legal <em>&amp; Privacy</em></h1>
+    <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Transparent policies for Substracker — a subscription tracking utility app.</p>
+    <div class="header-meta">
+      <span class="meta-chip">Effective: January 1, 2026</span>
+      <span class="meta-chip">Last Updated: January 1, 2026</span>
+      <span class="meta-chip compliance">✓ GDPR Compliant</span>
+      <span class="meta-chip compliance">✓ CCPA Compliant</span>
+      <span class="meta-chip compliance">✓ LGPD Compliant</span>
+      <span class="meta-chip compliance">✓ PDPA Compliant</span>
+    </div>
+  </header>
+
+  <!-- TAB NAV -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" role="tab" onclick="switchTab('privacy', this)">Privacy Policy</button>
+    <button class="tab-btn" role="tab" onclick="switchTab('terms', this)">Terms of Service</button>
+  </nav>
+
+  <!-- ════════════════════════════════════ -->
+  <!--          PRIVACY POLICY             -->
+  <!-- ════════════════════════════════════ -->
+  <div id="privacy" class="tab-content active">
+
+    <div class="toc">
+      <div class="toc-title">// Contents</div>
+      <ol>
+        <li><a href="#p1">Overview &amp; Controller Information</a></li>
+        <li><a href="#p2">Data We Collect</a></li>
+        <li><a href="#p3">How We Use Your Data</a></li>
+        <li><a href="#p4">Legal Basis for Processing (GDPR)</a></li>
+        <li><a href="#p5">Third-Party Services</a></li>
+        <li><a href="#p6">Data Retention</a></li>
+        <li><a href="#p7">International Transfers</a></li>
+        <li><a href="#p8">Your Rights</a></li>
+        <li><a href="#p9">Children's Privacy</a></li>
+        <li><a href="#p10">Changes to this Policy</a></li>
+        <li><a href="#p11">Contact &amp; DPO</a></li>
+      </ol>
+    </div>
+
+    <!-- 01 -->
+    <div class="section" id="p1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Overview &amp; Controller Information</h2>
+      </div>
+      <p>This Privacy Policy explains how <strong>Substracker</strong> ("we", "us", "our"), developed and operated by <strong>Dalsicore</strong>, collects, uses, shares, and protects personal information when you use our mobile application and related services (collectively, the "Service").</p>
+      <p>Dalsicore acts as the <strong>Data Controller</strong> for personal data processed through Substracker. We are committed to protecting your privacy and complying with applicable data protection laws including the EU General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), Brazil's Lei Geral de Proteção de Dados (LGPD), Thailand's Personal Data Protection Act (PDPA), and other applicable national privacy laws.</p>
+      <div class="callout callout-gdpr">
+        <strong><span class="callout-icon">🛡️</span> Global Compliance</strong>
+        Regardless of where you are located, we apply the same baseline of data protection standards. Users in the EU/EEA, UK, California, Brazil, and other jurisdictions with specific rights receive those additional protections as described in Section 8.
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="section" id="p2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Data We Collect</h2>
+      </div>
+      <p>We collect the following categories of information to provide and improve the Service:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Examples</th>
+            <th>Source</th>
+            <th>Required?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Account &amp; Profile</strong></td>
+            <td>Name, email address, profile photo</td>
+            <td>Provided by you</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td><strong>Subscription Data</strong></td>
+            <td>Subscription names, costs, billing cycles, renewal dates you enter</td>
+            <td>Provided by you</td>
+            <td>Core feature</td>
+          </tr>
+          <tr>
+            <td><strong>Usage &amp; Activity</strong></td>
+            <td>Features used, screens visited, actions taken, session duration</td>
+            <td>Automatically collected</td>
+            <td>No (optional analytics)</td>
+          </tr>
+          <tr>
+            <td><strong>Device &amp; Technical</strong></td>
+            <td>Device model, OS version, app version, unique device identifiers, IP address, locale</td>
+            <td>Automatically collected</td>
+            <td>For functionality</td>
+          </tr>
+          <tr>
+            <td><strong>Notification Settings</strong></td>
+            <td>Push notification preferences, reminder schedules</td>
+            <td>Provided by you</td>
+            <td>For reminders</td>
+          </tr>
+          <tr>
+            <td><strong>Purchase &amp; Entitlement</strong></td>
+            <td>One-time purchase history, Pro entitlement status</td>
+            <td>Via RevenueCat</td>
+            <td>For Pro features</td>
+          </tr>
+          <tr>
+            <td><strong>Crash &amp; Performance Logs</strong></td>
+            <td>Error logs, crash reports, performance traces</td>
+            <td>Via Firebase Crashlytics</td>
+            <td>For stability</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-info">
+        <strong><span class="callout-icon">ℹ️</span> We Do Not Collect</strong>
+        We do not collect payment card details, bank account numbers, or other financial credentials. All payment processing is handled securely by Google Play / RevenueCat. We also do not sell your personal data to any third party.
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="section" id="p3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>How We Use Your Data</h2>
+      </div>
+      <ul class="styled-list">
+        <li>Provide, operate, and maintain the Substracker application and its features</li>
+        <li>Create and manage your user account via Firebase Authentication</li>
+        <li>Sync your subscription data across devices using Firebase Firestore</li>
+        <li>Send push notifications and reminders for upcoming subscription renewals</li>
+        <li>Process in-app purchases and manage premium entitlements via RevenueCat</li>
+        <li>Display personalized and contextual advertisements via Google AdMob</li>
+        <li>Analyze usage patterns to improve app performance and user experience</li>
+        <li>Detect, investigate, and prevent fraudulent or abusive activity</li>
+        <li>Comply with legal obligations and respond to lawful requests from authorities</li>
+        <li>Send transactional communications (e.g., security alerts, policy updates)</li>
+      </ul>
+    </div>
+
+    <!-- 04 -->
+    <div class="section" id="p4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Legal Basis for Processing (GDPR)</h2>
+      </div>
+      <p>For users in the European Economic Area (EEA), United Kingdom, and other jurisdictions requiring a lawful basis, we process personal data under the following grounds:</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Legal Basis</th><th>Processing Activities</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Contract Performance</strong> (Art. 6(1)(b))</td>
+            <td>Account creation, core app functionality, subscription syncing, push notifications</td>
+          </tr>
+          <tr>
+            <td><strong>Legitimate Interests</strong> (Art. 6(1)(f))</td>
+            <td>Fraud prevention, security monitoring, crash analytics, app improvement</td>
+          </tr>
+          <tr>
+            <td><strong>Consent</strong> (Art. 6(1)(a))</td>
+            <td>Personalized advertising (AdMob), optional analytics, marketing communications</td>
+          </tr>
+          <tr>
+            <td><strong>Legal Obligation</strong> (Art. 6(1)(c))</td>
+            <td>Compliance with applicable laws, responses to lawful authority requests</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Where we rely on consent, you may withdraw it at any time without affecting the lawfulness of processing prior to withdrawal.</p>
+    </div>
+
+    <!-- 05 -->
+    <div class="section" id="p5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Third-Party Services</h2>
+      </div>
+      <p>We use the following third-party processors. Each operates under its own privacy policy and is subject to a Data Processing Agreement with us where required by law:</p>
+      <div class="third-party-grid">
+        <div class="third-party-card">
+          <div class="third-party-name">Firebase (Google)</div>
+          <div class="third-party-purpose">Authentication, database, analytics, crash reporting, cloud storage</div>
+          <a class="third-party-link" href="https://firebase.google.com/support/privacy" target="_blank">Privacy Policy →</a>
+        </div>
+        <div class="third-party-card">
+          <div class="third-party-name">Google AdMob</div>
+          <div class="third-party-purpose">In-app advertising, interest-based ad personalization</div>
+          <a class="third-party-link" href="https://policies.google.com/privacy" target="_blank">Privacy Policy →</a>
+        </div>
+        <div class="third-party-card">
+          <div class="third-party-name">RevenueCat</div>
+          <div class="third-party-purpose">In-app purchase management, subscription entitlements, paywall analytics</div>
+          <a class="third-party-link" href="https://www.revenuecat.com/privacy" target="_blank">Privacy Policy →</a>
+        </div>
+        <div class="third-party-card">
+          <div class="third-party-name">Google Play</div>
+          <div class="third-party-purpose">App distribution, payment processing, purchase verification</div>
+          <a class="third-party-link" href="https://policies.google.com/privacy" target="_blank">Privacy Policy →</a>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <strong><span class="callout-icon">⚠️</span> Advertising &amp; Consent</strong>
+        Google AdMob may use device identifiers and usage data to show personalized ads. In regions requiring consent (EEA, UK), we display a consent prompt before serving personalized ads. You may opt out of personalized advertising in your device settings or via the in-app privacy controls.
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="section" id="p6">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Data Retention</h2>
+      </div>
+      <p>We retain your data for as long as necessary to provide the Service and comply with legal obligations:</p>
+      <ul class="styled-list">
+        <li>Account and subscription data: retained while your account is active, deleted within <strong>30 days</strong> of account deletion request</li>
+        <li>Usage and analytics data: retained for a maximum of <strong>26 months</strong> (Firebase Analytics default)</li>
+        <li>Crash logs: retained for <strong>90 days</strong></li>
+        <li>One-time purchase records: retained for <strong>7 years</strong> to comply with tax and financial regulations</li>
+        <li>Backup data: purged within <strong>90 days</strong> of account deletion</li>
+      </ul>
+      <p>After the applicable retention period, data is securely deleted or anonymized so it can no longer identify you.</p>
+    </div>
+
+    <!-- 07 -->
+    <div class="section" id="p7">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>International Data Transfers</h2>
+      </div>
+      <p>As we use cloud services like Firebase (operated by Google LLC, USA) and RevenueCat (USA), your data may be transferred to and processed in countries outside your own, including the United States, which may not offer the same level of data protection as your home country.</p>
+      <p>We ensure appropriate safeguards are in place for such transfers, including:</p>
+      <ul class="styled-list">
+        <li>EU Standard Contractual Clauses (SCCs) for transfers from the EEA/UK</li>
+        <li>Google's and RevenueCat's adequacy certifications and compliance with applicable transfer mechanisms</li>
+        <li>Binding Corporate Rules (BCR) where applicable</li>
+      </ul>
+    </div>
+
+    <!-- 08 -->
+    <div class="section" id="p8">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Your Rights</h2>
+      </div>
+      <p>Depending on your location, you have the following rights regarding your personal data:</p>
+      <div class="rights-grid">
+        <div class="right-card">
+          <div class="right-title">Access</div>
+          <p>Request a copy of the data we hold about you</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Rectification</div>
+          <p>Correct inaccurate or incomplete data</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Erasure</div>
+          <p>Request deletion of your personal data ("right to be forgotten")</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Portability</div>
+          <p>Receive your data in a structured, machine-readable format</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Restriction</div>
+          <p>Limit how we process your data in certain circumstances</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Objection</div>
+          <p>Object to processing based on legitimate interests or for direct marketing</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Withdraw Consent</div>
+          <p>Withdraw consent at any time where processing is consent-based</p>
+        </div>
+        <div class="right-card">
+          <div class="right-title">Non-Discrimination</div>
+          <p>CCPA: no discrimination for exercising privacy rights</p>
+        </div>
+      </div>
+      <p>To exercise any of these rights, contact us at <strong>hello.dalsicore@gmail.com</strong>. We will respond within 30 days (or within the timeframe required by applicable law). We may request identity verification before processing your request.</p>
+      <p>EU/EEA users also have the right to lodge a complaint with your local <strong>Data Protection Authority (DPA)</strong> if you believe your rights have been violated.</p>
+    </div>
+
+    <!-- 09 -->
+    <div class="section" id="p9">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>Children's Privacy</h2>
+      </div>
+      <p>Substracker is not directed to children under the age of <strong>13</strong> (or under 16 in the EEA/UK, as applicable). We do not knowingly collect personal information from children. If you believe we have inadvertently collected data from a child, please contact us immediately and we will delete such data promptly.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="section" id="p10">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Changes to this Policy</h2>
+      </div>
+      <p>We may update this Privacy Policy from time to time. When we make material changes, we will notify you via in-app notification or email at least <strong>30 days</strong> before the changes take effect. Your continued use of the Service after the effective date constitutes your acceptance of the updated policy.</p>
+      <p>Previous versions of this policy are available upon request by contacting us at the email below.</p>
+    </div>
+
+    <!-- 11 -->
+    <div class="section" id="p11">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2>Contact</h2>
+      </div>
+      <p>For any privacy-related questions, requests, or complaints, please contact us:</p>
+      <div class="contact-box">
+        <div class="contact-row">
+          <span class="contact-label">Company</span>
+          <span class="contact-value">Dalsicore</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">App</span>
+          <span class="contact-value">Substracker</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Email</span>
+          <span class="contact-value"><a href="mailto:hello.dalsicore@gmail.com">hello.dalsicore@gmail.com</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Website</span>
+          <span class="contact-value"><a href="https://dalsicore.com">dalsicore.com</a></span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #privacy -->
+
+
+  <!-- ════════════════════════════════════ -->
+  <!--          TERMS OF SERVICE           -->
+  <!-- ════════════════════════════════════ -->
+  <div id="terms" class="tab-content">
+
+    <div class="toc">
+      <div class="toc-title">// Contents</div>
+      <ol>
+        <li><a href="#t1">Acceptance of Terms</a></li>
+        <li><a href="#t2">Description of Service</a></li>
+        <li><a href="#t3">Account Registration</a></li>
+        <li><a href="#t4">Substracker Pro — One-Time Purchase</a></li>
+        <li><a href="#t5">Free Tier &amp; Advertising</a></li>
+        <li><a href="#t6">User Conduct &amp; Restrictions</a></li>
+        <li><a href="#t7">Intellectual Property</a></li>
+        <li><a href="#t8">Disclaimers &amp; Limitation of Liability</a></li>
+        <li><a href="#t9">Indemnification</a></li>
+        <li><a href="#t10">Termination</a></li>
+        <li><a href="#t11">Governing Law &amp; Dispute Resolution</a></li>
+        <li><a href="#t12">Changes to Terms</a></li>
+        <li><a href="#t13">Contact</a></li>
+      </ol>
+    </div>
+
+    <!-- T01 -->
+    <div class="section" id="t1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Acceptance of Terms</h2>
+      </div>
+      <p>By downloading, installing, or using Substracker (the "App") or any associated service provided by Dalsicore ("we", "us", "our"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the App.</p>
+      <p>These Terms constitute a legally binding agreement between you and Dalsicore. Use of the App also constitutes your acknowledgment of our <strong>Privacy Policy</strong>, which is incorporated herein by reference.</p>
+      <div class="callout callout-warn">
+        <strong><span class="callout-icon">⚠️</span> Age Requirement</strong>
+        You must be at least 13 years of age (or 16 in the EEA/UK) to use the App. By accepting these Terms, you represent that you meet this requirement.
+      </div>
+    </div>
+
+    <!-- T02 -->
+    <div class="section" id="t2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Description of Service</h2>
+      </div>
+      <p>Substracker is a utility application that helps users track, organize, and manage their subscription services. Features include subscription entry and management, renewal reminders, cost summaries, and optional premium features available via in-app purchase.</p>
+      <p>We reserve the right to modify, suspend, or discontinue any part of the Service at any time. We will provide reasonable notice where practical but are not obligated to do so for non-material changes.</p>
+    </div>
+
+    <!-- T03 -->
+    <div class="section" id="t3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>Account Registration</h2>
+      </div>
+      <ul class="styled-list">
+        <li>You must provide accurate and complete information when creating an account</li>
+        <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+        <li>You are responsible for all activities that occur under your account</li>
+        <li>You must notify us immediately of any unauthorized account use at <a href="mailto:hello.dalsicore@gmail.com" style="color: var(--accent)">hello.dalsicore@gmail.com</a></li>
+        <li>One account per person; multiple accounts for the same individual are not permitted</li>
+      </ul>
+    </div>
+
+    <!-- T04 -->
+    <div class="section" id="t4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Substracker Pro — One-Time Purchase</h2>
+      </div>
+      <p>Substracker offers a free tier and a one-time in-app purchase ("Substracker Pro") that permanently unlocks all premium features. There are no recurring charges, subscriptions, or automatic renewals.</p>
+      <ul class="styled-list">
+        <li><strong>One-Time Payment:</strong> Substracker Pro is purchased once via Google Play. You will never be charged again for the same account</li>
+        <li><strong>Lifetime Access:</strong> Once purchased, Pro features are permanently available on your account for as long as the App exists on the platform</li>
+        <li><strong>Managed via RevenueCat:</strong> Purchase verification and entitlement management is handled through RevenueCat. Your purchase is linked to your Google Play account</li>
+        <li><strong>Restoring Purchase:</strong> If you reinstall the App or change devices, you can restore your Pro purchase via the "Restore Purchase" option in the App using the same Google Play account</li>
+        <li><strong>Refunds:</strong> Refund requests are subject to Google Play's refund policy. We do not issue refunds directly, except as required by applicable consumer protection law</li>
+        <li><strong>Price Changes:</strong> The purchase price may change for new buyers at any time. Existing Pro users are not affected</li>
+      </ul>
+      <div class="callout callout-gdpr">
+        <strong><span class="callout-icon">🇪🇺</span> EU Consumer Rights</strong>
+        EU consumers have the right to withdraw from a digital content contract within 14 days of purchase, unless digital content delivery has begun with your explicit prior consent and acknowledgment that this waives your right of withdrawal. By completing the purchase and accessing Pro features, you consent to immediate delivery and acknowledge this waiver.
+      </div>
+    </div>
+
+    <!-- T05 -->
+    <div class="section" id="t5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>Free Tier &amp; Advertising</h2>
+      </div>
+      <p>The free tier of Substracker is supported by advertising served by <strong>Google AdMob</strong>. By using the free tier, you consent to the display of advertisements within the App.</p>
+      <ul class="styled-list">
+        <li>Ads may be personalized based on your device's advertising ID and usage data, subject to your consent preferences</li>
+        <li>You may opt out of personalized ads in your device settings (Google Settings → Ads) or via in-app privacy controls</li>
+        <li>Upgrading to Substracker Pro removes all advertising from the App</li>
+      </ul>
+    </div>
+
+    <!-- T06 -->
+    <div class="section" id="t6">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>User Conduct &amp; Restrictions</h2>
+      </div>
+      <p>You agree not to use the Service to:</p>
+      <ul class="styled-list">
+        <li>Violate any applicable law, regulation, or third-party rights</li>
+        <li>Attempt to reverse-engineer, decompile, or disassemble the App</li>
+        <li>Attempt to gain unauthorized access to our systems or other users' accounts</li>
+        <li>Transmit malware, viruses, or any malicious code</li>
+        <li>Scrape, crawl, or extract data from the App in an automated manner</li>
+        <li>Use the App for any commercial purpose without our written consent</li>
+        <li>Impersonate any person or entity, or misrepresent your affiliation</li>
+      </ul>
+      <p>Violation of these restrictions may result in immediate account suspension or termination without notice.</p>
+    </div>
+
+    <!-- T07 -->
+    <div class="section" id="t7">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Intellectual Property</h2>
+      </div>
+      <p>All rights, title, and interest in the App, including its code, design, branding, logos, and content (excluding user-provided data), are owned by or licensed to Dalsicore and are protected by applicable intellectual property laws.</p>
+      <p>We grant you a limited, non-exclusive, non-transferable, revocable license to use the App for personal, non-commercial purposes in accordance with these Terms.</p>
+      <p>Your subscription data entered into the App remains <strong>yours</strong>. We claim no ownership over data you enter into Substracker.</p>
+    </div>
+
+    <!-- T08 -->
+    <div class="section" id="t8">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Disclaimers &amp; Limitation of Liability</h2>
+      </div>
+      <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+      <p>We do not warrant that the App will be error-free, uninterrupted, or free of viruses. Subscription data displayed is based solely on what you enter — we are not responsible for missed renewals or financial decisions made based on App data.</p>
+      <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, DALSICORE'S TOTAL LIABILITY TO YOU FOR ANY CLAIM ARISING FROM THESE TERMS OR USE OF THE SERVICE SHALL NOT EXCEED THE GREATER OF: (A) THE AMOUNT YOU PAID FOR THE ONE-TIME PURCHASE OF SUBSTRACKER PRO, OR (B) USD $10.</p>
+      <div class="callout callout-info">
+        <strong><span class="callout-icon">ℹ️</span> Consumer Rights Note</strong>
+        Some jurisdictions do not allow the exclusion of implied warranties or limitations on liability for consumers. If you are a consumer in such a jurisdiction (e.g., EU, UK, Australia), statutory rights that cannot be excluded or limited by contract continue to apply.
+      </div>
+    </div>
+
+    <!-- T09 -->
+    <div class="section" id="t9">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>Indemnification</h2>
+      </div>
+      <p>You agree to indemnify, defend, and hold harmless Dalsicore and its affiliates, officers, employees, and agents from and against any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or in connection with: (a) your use of the Service; (b) your violation of these Terms; or (c) your violation of any third-party right.</p>
+    </div>
+
+    <!-- T10 -->
+    <div class="section" id="t10">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Termination</h2>
+      </div>
+      <p>You may terminate your account at any time by using the "Delete Account" feature in the App settings. Upon termination, your data will be deleted in accordance with our Privacy Policy retention schedule.</p>
+      <p>We may suspend or terminate your account without notice if: (a) you breach these Terms; (b) we are required to do so by law; (c) we discontinue the Service. In the event of discontinuation of the Service, we will provide reasonable notice where practical. One-time purchase fees are non-refundable upon termination for breach.</p>
+    </div>
+
+    <!-- T11 -->
+    <div class="section" id="t11">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2>Governing Law &amp; Dispute Resolution</h2>
+      </div>
+      <p>These Terms are governed by the laws of the Republic of Indonesia, without regard to its conflict of law principles. For users in the EU/EEA, mandatory consumer protection laws of your country of residence also apply.</p>
+      <p>We encourage resolving disputes informally first by contacting us at <a href="mailto:hello.dalsicore@gmail.com" style="color: var(--accent)">hello.dalsicore@gmail.com</a>. If a dispute cannot be resolved informally:</p>
+      <ul class="styled-list">
+        <li><strong>EU/EEA users:</strong> May use the EU Online Dispute Resolution (ODR) platform at <a href="https://ec.europa.eu/consumers/odr" target="_blank" style="color: var(--accent)">ec.europa.eu/consumers/odr</a></li>
+        <li><strong>Other users:</strong> Disputes shall be submitted to binding arbitration or the competent courts of Indonesia</li>
+      </ul>
+    </div>
+
+    <!-- T12 -->
+    <div class="section" id="t12">
+      <div class="section-header">
+        <span class="section-num">12</span>
+        <h2>Changes to Terms</h2>
+      </div>
+      <p>We may update these Terms at any time. Material changes will be communicated via in-app notification or email at least <strong>30 days</strong> before taking effect. Your continued use of the App after the effective date constitutes acceptance of the revised Terms.</p>
+      <p>If you do not agree to the revised Terms, you may terminate your account before the effective date as described in Section 10.</p>
+    </div>
+
+    <!-- T13 -->
+    <div class="section" id="t13">
+      <div class="section-header">
+        <span class="section-num">13</span>
+        <h2>Contact</h2>
+      </div>
+      <p>For questions about these Terms of Service, please contact us:</p>
+      <div class="contact-box">
+        <div class="contact-row">
+          <span class="contact-label">Company</span>
+          <span class="contact-value">Dalsicore</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Email</span>
+          <span class="contact-value"><a href="mailto:hello.dalsicore@gmail.com">hello.dalsicore@gmail.com</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Website</span>
+          <span class="contact-value"><a href="https://dalsicore.com">dalsicore.com</a></span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #terms -->
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-brand">© 2026 Dalsicore · Substracker</span>
+    <div class="footer-links">
+      <a href="#" onclick="switchTab('privacy', document.querySelectorAll('.tab-btn')[0]); return false;">Privacy Policy</a>
+      <a href="#" onclick="switchTab('terms', document.querySelectorAll('.tab-btn')[1]); return false;">Terms of Service</a>
+      <a href="mailto:hello.dalsicore@gmail.com">Contact</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
