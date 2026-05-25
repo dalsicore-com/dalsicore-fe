@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Deletion Request — Dalsicore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:           #09090b;
+    --surface:      #111113;
+    --surface2:     #18181c;
+    --border:       #27272f;
+    --border-hover: #3f3f52;
+    --accent:       #e8533a;
+    --accent-soft:  rgba(232, 83, 58, 0.10);
+    --accent-glow:  rgba(232, 83, 58, 0.22);
+    --accent-dim:   rgba(232, 83, 58, 0.45);
+    --text:         #ececf0;
+    --text-muted:   #72728a;
+    --text-faint:   #38384a;
+    --warn-bg:      rgba(232, 83, 58, 0.07);
+    --warn-border:  rgba(232, 83, 58, 0.22);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px 60px;
+    overflow-x: hidden;
+  }
+
+  /* ── AMBIENT BG ── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(232,83,58,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NOISE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 180px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── CARD ── */
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: rise 0.55s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  /* top accent line */
+  .card::before {
+    content: '';
+    display: block;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 40%, var(--accent-dim) 100%);
+  }
+
+  .card-inner {
+    padding: 36px 36px 32px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 28px;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .brand-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  .brand-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .header p {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ── WARNING BOX ── */
+  .warn-box {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 8px;
+    padding: 13px 15px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .warn-icon {
+    font-size: 14px;
+    line-height: 1.6;
+    flex-shrink: 0;
+  }
+
+  .warn-text {
+    font-size: 12.5px;
+    color: #c26a58;
+    line-height: 1.6;
+  }
+
+  .warn-text strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── FORM ── */
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+  }
+
+  label .req {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-faint);
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 88px;
+    line-height: 1.6;
+  }
+
+  /* custom select arrow */
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  select option {
+    background: #1a1a20;
+    color: var(--text);
+  }
+
+  /* ── CHECKBOX ── */
+  .checkbox-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
+    padding: 0;
+    margin-top: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  .checkbox-group label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-muted);
+    margin-bottom: 0;
+    cursor: pointer;
+    line-height: 1.55;
+  }
+
+  .checkbox-group label strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 22px 0;
+  }
+
+  /* ── SUBMIT BUTTON ── */
+  .btn-submit {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 13px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit:hover {
+    opacity: 0.88;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+
+  .btn-submit:active {
+    transform: scale(0.985);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* ── FOOTER NOTE ── */
+  .footer-note {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-faint);
+    line-height: 1.6;
+  }
+
+  .footer-note a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 44px 36px 40px;
+    gap: 12px;
+  }
+
+  .success-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--accent-soft);
+    border: 1px solid var(--warn-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .success-state h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .success-state p {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    max-width: 320px;
+    line-height: 1.65;
+  }
+
+  .success-email-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+
+  /* ── PAGE FOOTER ── */
+  .page-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  /* ── ANIMATION ── */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 520px) {
+    body { padding: 24px 14px 48px; align-items: stretch; }
+    .card { border-radius: 12px; }
+    .card-inner { padding: 26px 22px 24px; }
+    .success-state { padding: 36px 22px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+
+  <!-- FORM STATE -->
+  <div class="card-inner" id="form-state">
+
+    <div class="header">
+      <div class="brand-row">
+        <div class="brand-dot"></div>
+        <span class="brand-label">Dalsicore · Account Services</span>
+      </div>
+      <h1>Request Account<br>Deletion</h1>
+      <p>We'll process your request within <strong style="color:var(--text)">7 business days</strong> and confirm via email once your data has been removed.</p>
+    </div>
+
+    <div class="warn-box">
+      <span class="warn-icon">⚠️</span>
+      <span class="warn-text"><strong>This action is irreversible.</strong> All your data, including account info and app data associated with this account, will be permanently deleted and cannot be recovered.</span>
+    </div>
+
+    <!-- App Name -->
+    <div class="form-group">
+      <label for="app">App Name <span class="req">*</span></label>
+      <input type="text" id="app" placeholder="e.g. Substracker, Aquri..." required>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email">Account Email <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="email@example.com" required autocomplete="email">
+    </div>
+
+    <!-- User ID (optional) -->
+    <div class="form-group">
+      <label for="userid">User ID <span style="color:var(--text-faint);font-size:10px;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input type="text" id="userid" placeholder="Found in app settings, if available">
+    </div>
+
+    <!-- Reason -->
+    <div class="form-group">
+      <label for="reason">Reason <span style="color:var(--text-faint);font-size:10px;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <div class="select-wrap">
+        <select id="reason">
+          <option value="" disabled selected>Select a reason</option>
+          <option value="No longer using the app">No longer using the app</option>
+          <option value="Privacy concerns">Privacy concerns</option>
+          <option value="Switching to another service">Switching to another service</option>
+          <option value="App not working properly">App not working properly</option>
+          <option value="Other reason">Other reason</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Note -->
+    <div class="form-group">
+      <label for="note">Additional Notes <span style="color:var(--text-faint);font-size:10px;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <textarea id="note" placeholder="Any additional context you'd like to share..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Confirmation checkbox -->
+    <div class="checkbox-group">
+      <input type="checkbox" id="confirm">
+      <label for="confirm">I understand that <strong>all my data will be permanently deleted</strong> and this action cannot be undone.</label>
+    </div>
+
+    <button class="btn-submit" id="submit-btn" disabled onclick="handleSubmit()">
+      Submit Deletion Request
+    </button>
+
+    <p class="footer-note">
+      Your email client will open with a pre-filled message.<br>
+      Questions? <a href="mailto:hello.dalsicore@gmail.com">hello.dalsicore@gmail.com</a>
+    </p>
+
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="success-state" id="success-state">
+    <div class="success-icon">📬</div>
+    <h2>Request Sent</h2>
+    <p>Your account deletion request has been prepared. Please send the email that just opened in your email client.</p>
+    <div class="success-email-chip">hello.dalsicore@gmail.com</div>
+    <p style="margin-top:8px; font-size:12.5px;">If your email client didn't open, <a href="#" id="retry-link" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px;">click here to try again</a>.</p>
+  </div>
+
+</div>
+
+<div class="page-footer">DALSICORE &nbsp;·&nbsp; ACCOUNT DELETION</div>
+
+<script>
+  const confirmBox = document.getElementById('confirm');
+  const submitBtn  = document.getElementById('submit-btn');
+  const formState  = document.getElementById('form-state');
+  const successState = document.getElementById('success-state');
+  const retryLink  = document.getElementById('retry-link');
+
+  confirmBox.addEventListener('change', () => {
+    submitBtn.disabled = !confirmBox.checked;
+  });
+
+  function buildMailto() {
+    const app    = document.getElementById('app').value || '(not specified)';
+    const email  = document.getElementById('email').value.trim();
+    const userid = document.getElementById('userid').value.trim();
+    const reason = document.getElementById('reason').value || 'Not specified';
+    const note   = document.getElementById('note').value.trim();
+
+    const subject = `[Account Deletion Request] ${app} — ${email}`;
+
+    const body = [
+      `Hello Dalsicore Team,`,
+      ``,
+      `I would like to request the permanent deletion of my account and all associated data.`,
+      ``,
+      `--- REQUEST DETAILS ---`,
+      `App          : ${app}`,
+      `Account Email: ${email}`,
+      `User ID      : ${userid || 'Not provided'}`,
+      `Reason       : ${reason}`,
+      note ? `Notes        : ${note}` : `Notes        : None`,
+      ``,
+      `--- CONFIRMATION ---`,
+      `I understand that this action is irreversible and all my data will be permanently deleted.`,
+      ``,
+      `Please confirm once the deletion has been completed.`,
+      ``,
+      `Thank you.`,
+    ].join('\n');
+
+    return `mailto:hello.dalsicore@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  function handleSubmit() {
+    const email = document.getElementById('email').value.trim();
+    const app   = document.getElementById('app').value.trim();
+
+    if (!email || !app) {
+      if (!app) document.getElementById('app').style.borderColor = 'var(--accent)';
+      if (!email) document.getElementById('email').style.borderColor = 'var(--accent)';
+      return;
+    }
+
+    const mailto = buildMailto();
+    window.location.href = mailto;
+
+    // show success state after short delay
+    setTimeout(() => {
+      formState.style.display = 'none';
+      successState.style.display = 'flex';
+    }, 600);
+
+    retryLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = mailto;
+    });
+  }
+
+  // remove red border on input
+  document.getElementById('app').addEventListener('input', function() {
+    this.style.borderColor = '';
+  });
+  document.getElementById('email').addEventListener('input', function() {
+    this.style.borderColor = '';
+  });
+</script>
+
+</body>
+</html>
