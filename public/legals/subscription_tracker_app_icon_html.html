@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscription Tracker App Icon</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #eef2f7;
+      font-family: Inter, Arial, sans-serif;
+      color: #182033;
+    }
+
+    .page {
+      display: grid;
+      gap: 22px;
+      justify-items: center;
+      padding: 28px;
+    }
+
+    .icon-wrap {
+      width: 512px;
+      height: 512px;
+      display: grid;
+      place-items: center;
+      border-radius: 0;
+      overflow: visible;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    svg {
+      display: block;
+      width: 512px;
+      height: 512px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      background: #246bfe;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 26px rgba(36, 107, 254, 0.28);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(36, 107, 254, 0.34);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .hint {
+      margin: 0;
+      max-width: 512px;
+      text-align: center;
+      line-height: 1.5;
+      color: #596172;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="icon-wrap" id="iconPreview" aria-label="Subscription Tracker App Icon">
+      <svg id="appIcon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="primary" x1="128" y1="106" x2="384" y2="406" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#4F8CFF" />
+            <stop offset="1" stop-color="#6A5CFF" />
+          </linearGradient>
+
+          <linearGradient id="accent" x1="176" y1="348" x2="344" y2="420" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#18C49C" />
+            <stop offset="1" stop-color="#34D7B6" />
+          </linearGradient>
+
+          <filter id="glyphShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#1C2A4A" flood-opacity="0.18" />
+          </filter>
+        </defs>
+
+        <!-- Standalone subscription glyph, no background container -->
+        <g filter="url(#glyphShadow)">
+          <!-- Recurring arrows -->
+          <path
+            d="M151 260C151 202.01 198.01 155 256 155C292.52 155 324.67 173.65 343.5 201.95"
+            fill="none"
+            stroke="url(#primary)"
+            stroke-width="42"
+            stroke-linecap="round"
+          />
+          <path
+            d="M350 153L358 218L293 207"
+            fill="none"
+            stroke="url(#primary)"
+            stroke-width="42"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <path
+            d="M361 252C361 309.99 313.99 357 256 357C219.48 357 187.33 338.35 168.5 310.05"
+            fill="none"
+            stroke="url(#accent)"
+            stroke-width="42"
+            stroke-linecap="round"
+          />
+          <path
+            d="M162 359L154 294L219 305"
+            fill="none"
+            stroke="url(#accent)"
+            stroke-width="42"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <!-- Price dot -->
+          <circle cx="256" cy="256" r="62" fill="#FFFFFF" />
+          <path
+            d="M256 213V299"
+            fill="none"
+            stroke="#246BFE"
+            stroke-width="24"
+            stroke-linecap="round"
+          />
+          <path
+            d="M284 230C276 219 263 214 250 217C236 220 227 229 227 241C227 256 240 261 257 266C274 271 286 277 286 291C286 304 274 313 257 313C242 313 230 308 222 297"
+            fill="none"
+            stroke="#246BFE"
+            stroke-width="22"
+            stroke-linecap="round"
+          />
+
+          <!-- Small tracking check -->
+          <circle cx="347" cy="350" r="48" fill="#FFFFFF" />
+          <path
+            d="M324 350L341 367L372 333"
+            fill="none"
+            stroke="#18C49C"
+            stroke-width="18"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      </svg>
+    </div>
+
+    <button type="button" onclick="exportPng()">Export PNG 512×512</button>
+    <p class="hint">Ikon ini dibuat dalam SVG 512×512 tanpa background bawaan. Tombol export akan mengunduh PNG transparan ukuran tetap 512×512.</p>
+  </main>
+
+  <script>
+    function exportPng() {
+      const svg = document.getElementById('appIcon');
+      const serializer = new XMLSerializer();
+      const svgText = serializer.serializeToString(svg);
+      const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 512, 512);
+        ctx.drawImage(image, 0, 0, 512, 512);
+
+        URL.revokeObjectURL(url);
+
+        const pngUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = pngUrl;
+        link.download = 'subscription-tracker-icon-512.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      image.src = url;
+    }
+  </script>
+</body>
+</html>
