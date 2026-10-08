@@ -192,12 +192,16 @@ def build_ga4():
 
     mau, wau, dau = nth(fb[0], 1), nth(fb[0], 2), nth(fb[0], 3)
     newu = nth(acq[0], 1)
+    rev_total = nth(fb[14], 1)
+    rev_purchase = nth(fb[15], 1)
+    rev_ads = nth(fb[16], 1)
 
     def peak(d):
         k = max(d, key=lambda x: d[x])
         return {"date": day(k).isoformat(), "value": round(d[k])}
 
     countries = []
+    rev_idx = dem[0].index("Total revenue") if "Total revenue" in dem[0] else None
     for r in dem[1:]:
         try:
             countries.append({
@@ -206,10 +210,19 @@ def build_ga4():
                 "newUsers": int(r[2]),
                 "engagementRate": round(float(r[4]), 3),
                 "engagementSeconds": round(float(r[6])),
+                "revenue": round(float(r[rev_idx])) if rev_idx is not None else 0,
             })
         except (ValueError, IndexError):
             pass
     countries = sorted(countries, key=lambda x: -x["active"])[:14]
+
+    total_rev = round(sum(rev_total.values()))
+    ad_rev = round(sum(rev_ads.values()))
+    purchase_rev = round(sum(rev_purchase.values()))
+    rev_by_country = sorted(
+        [{"name": c["name"], "v": c["revenue"]} for c in countries if c["revenue"] > 0],
+        key=lambda x: -x["v"],
+    )
 
     mau_pairs = sorted((day(k), v) for k, v in mau.items())
     new_pairs = sorted((day(k), v) for k, v in newu.items())
@@ -223,6 +236,14 @@ def build_ga4():
         "series": [{"d": d.isoformat(), "v": round(v)} for d, v in weekly(mau_pairs)],
         "newSeries": [{"d": d.isoformat(), "v": round(v)} for d, v in weekly(new_pairs) if v > 0],
         "countries": countries,
+        "revenue": {
+            "currency": "IDR",
+            "total": total_rev,
+            "ads": ad_rev,
+            "purchases": purchase_rev,
+            "adShare": round(ad_rev / total_rev, 3) if total_rev else 0,
+            "countries": rev_by_country[:8],
+        },
         "languages": [{"name": r[0], "v": int(r[1])} for r in attrs[6][1:7]],
         "ages": [{"name": r[0], "v": int(r[1])} for r in attrs[5][1:]],
         "channels": [{"name": r[0], "v": int(r[1])} for r in acq[1][1:]],
@@ -258,6 +279,15 @@ def emit(play, ga4):
     L.append("  newUsers: number;")
     L.append("  engagementRate: number;")
     L.append("  engagementSeconds: number;")
+    L.append("  revenue: number;")
+    L.append("}")
+    L.append("export interface Ga4Revenue {")
+    L.append("  currency: string;")
+    L.append("  total: number;")
+    L.append("  ads: number;")
+    L.append("  purchases: number;")
+    L.append("  adShare: number;")
+    L.append("  countries: Labeled[];")
     L.append("}")
     L.append("export interface Labeled { name: string; v: number }")
     L.append("export interface PeakPoint { date: string; value: number }")
@@ -291,6 +321,7 @@ def emit(play, ga4):
     L.append(f'    series: {ts(ga4["series"])} as MetricPoint[],')
     L.append(f'    newSeries: {ts(ga4["newSeries"])} as MetricPoint[],')
     L.append(f'    countries: {ts(ga4["countries"])} as Ga4Country[],')
+    L.append(f'    revenue: {ts(ga4["revenue"])} as Ga4Revenue,')
     L.append(f'    languages: {ts(ga4["languages"])} as Labeled[],')
     L.append(f'    ages: {ts(ga4["ages"])} as Labeled[],')
     L.append(f'    channels: {ts(ga4["channels"])} as Labeled[]')

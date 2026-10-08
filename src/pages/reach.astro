@@ -164,9 +164,16 @@ const asBars = (list: { name: string; v: number }[]) =>
         <div>
           <dt>New users, all time</dt>
           <dd>{ga4.newUsersTotal.toLocaleString("en-US")}</dd>
-          <dd class="sub">across all apps</dd>
+          <dd class="sub">everyone who ever opened the apps</dd>
         </div>
       </dl>
+
+      <p class="muted clarify reveal delay-3">
+        Read these four together and it makes sense: {ga4.newUsersTotal.toLocaleString("en-US")} people
+        tried the apps at some point over six years, but they never overlapped much. The busiest the
+        apps ever were at once was {ga4.peak.mau.value.toLocaleString("en-US")} monthly active users.
+        That gap is the honest story of a fleet with lots of reach and little retention.
+      </p>
     </div>
   </section>
 
@@ -213,14 +220,47 @@ const asBars = (list: { name: string; v: number }[]) =>
         <BrandBars items={asBars(ga4.channels)} />
       </div>
     </div>
+    <div class="rev-head reveal">
+      <h3 class="mini-title">Revenue</h3>
+      <p class="muted rev-lead">
+        Google Analytics ships these figures as bare numbers with no currency label. At this scale
+        they only read as Indonesian rupiah, so that is how they are shown. Total is the whole
+        fleet over six years.
+      </p>
+    </div>
+
+    <dl class="stats reveal">
+      <div>
+        <dt>Total, all apps</dt>
+        <dd>Rp {ga4.revenue.total.toLocaleString("en-US")}</dd>
+        <dd class="sub">2020 to 2026</dd>
+      </div>
+      <div>
+        <dt>From ads</dt>
+        <dd>Rp {ga4.revenue.ads.toLocaleString("en-US")}</dd>
+        <dd class="sub">{Math.round(ga4.revenue.adShare * 100)}% of the total</dd>
+      </div>
+      <div>
+        <dt>From purchases</dt>
+        <dd>Rp {ga4.revenue.purchases.toLocaleString("en-US")}</dd>
+        <dd class="sub">one-off in-app purchases</dd>
+      </div>
+    </dl>
+
+    <div class="rev-note reveal">
+      <h3 class="mini-title">Revenue by country</h3>
+      <BrandBars items={asBars(ga4.revenue.countries)} />
+    </div>
+
     <div class="source surface reveal note-src">
       <h2>About the analytics</h2>
       <p>
-        Source: Google Analytics 4 (Firebase), property "Android App", {fmtDate(ga4.range.start)} to{" "}
-        {fmtDate(ga4.range.end)}. Active users are Google's rolling windows: 30-day, 7-day and 1-day.
-        Country, language, age and channel come from Google's own reports. Revenue fields in the
-        export are excluded here because the export does not state a currency, and a number without
-        a unit is worse than no number.
+        Source: Google Analytics 4 (Firebase), property "Android App", {fmtDate(ga4.range.start)}{" "}
+        to {fmtDate(ga4.range.end)}. Active users are Google's rolling windows: 30-day, 7-day and
+        1-day. New users is the running total of unique first-time users over the whole period, not
+        a simultaneous figure. Country, language, age and channel come from Google's own reports.
+        There is no currency in the export, so the revenue figures above are read as Indonesian
+        rupiah.
       </p>
     </div>
   </section>
@@ -342,6 +382,24 @@ const asBars = (list: { name: string; v: number }[]) =>
     font-weight: 600;
   }
   .note-src {
+    margin-top: var(--space-6);
+  }
+
+  .clarify {
+    margin: var(--space-5) 0 0;
+    max-width: 72ch;
+    font-size: 0.95rem;
+  }
+
+  .rev-head {
+    margin: var(--space-6) 0 var(--space-4);
+  }
+  .rev-lead {
+    max-width: 68ch;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .rev-note {
     margin-top: var(--space-6);
   }
 
