@@ -1,7 +1,7 @@
 /*
  * Design tokens.
  *
- * Direction: light, editorial, neutral — inspired by research-lab sites such as
+ * Direction: light, editorial, neutral. Inspired by research-lab sites such as
  * seed.bytedance.com. Near-black type on white, generous whitespace, a single
  * blue accent for links and one warm "blush" tone carried over from the brand
  * icon. Keep the historical variable names so component styles keep working.

@@ -1,35 +1,21 @@
 ---
-import BrandMark from "../ui/BrandMark.astro";
-import { LIVE_APPS } from "../../data/apps";
-
-const live = LIVE_APPS[0];
 ---
 
 <section class="hero">
   <div class="container inner">
-    <div class="badge reveal">
-      <span class="dot" aria-hidden="true"></span>
-      {live.name} is live on Google Play
-    </div>
-
-    <h1 class="statement reveal delay-1">
+    <h1 class="statement reveal">
       Ship fast. Learn faster.<br />
       Build what lasts.
     </h1>
 
-    <p class="sub reveal delay-2">
-      Dalsicore is a solo-founded Android studio in Indonesia. We shipped 20+ apps, learned
-      what fails, and now build AI-native products with Claude.
+    <p class="sub reveal delay-1">
+      Dalsicore is a solo Android studio in Indonesia. We've shipped over 20 apps, most of which
+      never found an audience. Now we build AI-native products with Claude.
     </p>
 
-    <div class="actions reveal delay-3">
+    <div class="actions reveal delay-2">
       <a class="btn btn-primary" href="/portfolio">See what we're building</a>
-      <a class="btn btn-ghost" href="/archive">The honest archive</a>
-    </div>
-
-    <div class="brand-line reveal delay-4">
-      <BrandMark />
-      <span>Euni Dev → Dalsicore · building since 2022</span>
+      <a class="btn btn-ghost" href="/archive">Read the archive</a>
     </div>
   </div>
 </section>
@@ -50,27 +36,6 @@ const live = LIVE_APPS[0];
     justify-items: start;
     gap: var(--space-4);
     max-width: 60rem;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: 1px solid var(--border-0);
-    background: var(--surface-1);
-    border-radius: var(--radius-pill);
-    padding: 0.34rem 0.85rem;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-1);
-  }
-
-  .dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.16);
   }
 
   .statement {
@@ -95,15 +60,5 @@ const live = LIVE_APPS[0];
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
-  }
-
-  .brand-line {
-    margin-top: var(--space-5);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: var(--text-2);
-    font-size: 0.88rem;
-    font-weight: 500;
   }
 </style>

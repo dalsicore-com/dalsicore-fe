@@ -5,7 +5,7 @@ import { CONTACT } from "../lib/constants";
 
 <BaseLayout
   title="Contact | Dalsicore"
-  description="Get in touch with Dalsicore — feedback, collaboration, or questions about what we build."
+  description="Get in touch with Dalsicore for feedback, collaboration, or questions about what we build."
 >
   <section class="section container">
     <p class="eyebrow reveal">Contact</p>
@@ -19,17 +19,14 @@ import { CONTACT } from "../lib/constants";
       <a class="surface card" href={`mailto:${CONTACT.email}`}>
         <h2>Email</h2>
         <p>{CONTACT.email}</p>
-        <span class="go" aria-hidden="true">→</span>
       </a>
       <a class="surface card" href={CONTACT.github} target="_blank" rel="noopener noreferrer">
         <h2>GitHub</h2>
         <p>github.com/dalsicore</p>
-        <span class="go" aria-hidden="true">→</span>
       </a>
       <a class="surface card" href={CONTACT.play} target="_blank" rel="noopener noreferrer">
         <h2>Google Play</h2>
         <p>Dalsicore developer page</p>
-        <span class="go" aria-hidden="true">→</span>
       </a>
       <div class="surface card static">
         <h2>Location</h2>
@@ -75,19 +72,6 @@ import { CONTACT } from "../lib/constants";
     margin: var(--space-2) 0 0;
     color: var(--text-1);
     font-size: 0.95rem;
-  }
-
-  .go {
-    position: absolute;
-    top: var(--space-5);
-    right: var(--space-5);
-    color: var(--text-2);
-    transition: transform 0.18s ease, color 0.18s ease;
-  }
-
-  .card:not(.static):hover .go {
-    transform: translateX(3px);
-    color: var(--accent-1);
   }
 
   @media (max-width: 760px) {

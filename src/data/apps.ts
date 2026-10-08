@@ -25,7 +25,7 @@ export interface AppEntry {
   rating?: number;
   /** "built with Claude" highlight. */
   builtWithClaude?: boolean;
-  /** Marquee product — gets a featured card on the homepage. */
+  /** Marquee product that gets a featured card on the homepage. */
   featured?: boolean;
   icon: string;
   banner: string;
@@ -43,7 +43,7 @@ export const APPS: AppEntry[] = [
     package: "com.dalsicore.substrack",
     tagline: "Track subscriptions, renewal reminders, recurring bills, and monthly cost.",
     description:
-      "A subscription tracker and recurring-bill manager with renewal reminders, monthly cost breakdowns and a yearly projection. Local-first, manual control, no bank connection. Built end-to-end with Claude — no hand-written code.",
+      "A subscription tracker and recurring-bill manager with renewal reminders, monthly cost breakdowns and a yearly projection. Local-first, manual control, no bank connection. Built end-to-end with Claude, with no hand-written code.",
     category: "Finance / Tools",
     status: "live",
     shipped: 2026,
@@ -113,7 +113,7 @@ export const APPS: AppEntry[] = [
   },
   {
     slug: "staver",
-    name: "Staver — Status Saver",
+    name: "Staver - Status Saver",
     package: "com.anafthdev.staver",
     tagline: "Save and repost photo, GIF and video statuses from WhatsApp.",
     description:
@@ -156,7 +156,7 @@ export const APPS: AppEntry[] = [
   },
   {
     slug: "npuzzle",
-    name: "NPuzzle — Sliding Puzzle",
+    name: "NPuzzle - Sliding Puzzle",
     package: "com.anafthdev.npuzzle",
     tagline: "A light, cloud-synced sliding puzzle game with 5 difficulties.",
     description:
@@ -181,7 +181,7 @@ export const APPS: AppEntry[] = [
     package: "com.eunidev.materialdesign",
     tagline: "Live Material Components reference, with copy-ready code.",
     description:
-      "A developer reference app showing Material Components — badges, bottom app bar, navigation, chips, date pickers, cards, menus and progress — with sample code to implement each one.",
+      "A developer reference app showing Material Components such as badges, bottom app bar, navigation, chips, date pickers, cards, menus and progress, with sample code to implement each one.",
     category: "Developer Tools",
     status: "retired",
     shipped: 2022,
@@ -246,7 +246,7 @@ export const APPS: AppEntry[] = [
     package: "com.anafthdev.md3compose",
     tagline: "Material 3 preview app, fully built in Jetpack Compose.",
     description:
-      "A Material Design 3 preview app built with Jetpack Compose, with live customisation of colour, elevation and shape for each component.",
+      "A Material Design 3 preview app built with Jetpack Compose, with live customization of color, elevation and shape for each component.",
     category: "Developer Tools",
     status: "retired",
     shipped: 2022,

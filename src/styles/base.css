@@ -94,23 +94,23 @@ h4 {
   box-shadow: var(--shadow-0);
 }
 
-/* Pill label */
+/* Label chip */
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   border: 1px solid var(--border-0);
-  border-radius: var(--radius-pill);
+  border-radius: 6px;
   background: var(--surface-1);
-  padding: 0.26rem 0.7rem;
-  color: var(--text-1);
+  padding: 0.22rem 0.6rem;
+  color: var(--text-2);
   font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.74rem;
+  font-weight: 500;
   letter-spacing: 0.01em;
 }
 
-/* Text link with the lab-blue accent */
+/* Text link in the lab-blue accent */
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -118,11 +118,12 @@ h4 {
   color: var(--accent-1);
   font-weight: 600;
   text-decoration: none;
-  transition: gap 0.18s ease, color 0.18s ease;
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
 }
 
 .text-link:hover {
-  gap: 0.55rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Buttons */
@@ -131,8 +132,8 @@ h4 {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: var(--radius-pill);
-  padding: 0.72rem 1.4rem;
+  border-radius: 8px;
+  padding: 0.7rem 1.3rem;
   font-family: var(--font-sans);
   font-size: 0.94rem;
   font-weight: 600;

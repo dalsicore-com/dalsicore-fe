@@ -17,7 +17,7 @@ const isLive = app.status === "live";
 >
   <article class="section container entry">
     <a class="back reveal" href={isLive ? "/portfolio" : "/archive"}>
-      <span aria-hidden="true">←</span> {isLive ? "Products" : "Archive"}
+      {isLive ? "Back to products" : "Back to archive"}
     </a>
 
     <header class="head reveal delay-1">
@@ -140,7 +140,7 @@ const isLive = app.status === "live";
 
   .chip {
     border: 1px solid var(--border-0);
-    border-radius: var(--radius-pill);
+    border-radius: 6px;
     padding: 0.24rem 0.7rem;
     color: var(--text-1);
     font-size: 0.76rem;

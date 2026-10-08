@@ -15,8 +15,8 @@ const products = (await getCollection("portfolio")).sort((a, b) => a.data.order 
     <p class="eyebrow reveal">What we build</p>
     <h1 class="section-title reveal delay-1">Products</h1>
     <p class="lead intro reveal delay-2">
-      Dalsicore is deliberately small: one live product, one in development, and a research
-      stream — plus a shelf of shipped apps that taught us how to get here.
+      Dalsicore is deliberately small. One live product, one in development, and a research stream,
+      plus a shelf of shipped apps that taught us how to get here.
     </p>
 
     <h2 class="group-title reveal delay-2">Live &amp; in development</h2>
@@ -51,7 +51,7 @@ const products = (await getCollection("portfolio")).sort((a, b) => a.data.order 
       {RETIRED_APPS.map((app) => <AppCard app={app} />)}
     </div>
     <p class="muted more reveal delay-3">
-      See the full set, with context, in the <a class="text-link" href="/archive">archive <span aria-hidden="true">→</span></a>
+      See the full set, with context, in the <a class="text-link" href="/archive">archive</a>
     </p>
   </section>
 </BaseLayout>
@@ -103,7 +103,7 @@ const products = (await getCollection("portfolio")).sort((a, b) => a.data.order 
   .badge {
     flex: none;
     border: 1px solid var(--border-0);
-    border-radius: var(--radius-pill);
+    border-radius: 6px;
     padding: 0.2rem 0.6rem;
     color: var(--text-2);
     font-size: 0.72rem;

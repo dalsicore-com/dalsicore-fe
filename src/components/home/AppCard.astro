@@ -29,7 +29,6 @@ const { app } = Astro.props;
   <div class="foot">
     {app.rating && <span class="metric">★ {app.rating.toFixed(1)}</span>}
     {app.builtWithClaude && <span class="metric claude">Built with Claude</span>}
-    <span class="arrow" aria-hidden="true">→</span>
   </div>
 </a>
 
@@ -86,7 +85,7 @@ const { app } = Astro.props;
   .status {
     flex: none;
     border: 1px solid var(--border-0);
-    border-radius: var(--radius-pill);
+    border-radius: 6px;
     padding: 0.2rem 0.6rem;
     color: var(--text-2);
     font-size: 0.72rem;
@@ -120,17 +119,6 @@ const { app } = Astro.props;
   }
 
   .metric.claude {
-    color: var(--accent-1);
-  }
-
-  .arrow {
-    margin-left: auto;
-    color: var(--text-2);
-    transition: transform 0.18s ease, color 0.18s ease;
-  }
-
-  .app-card:hover .arrow {
-    transform: translateX(3px);
     color: var(--accent-1);
   }
 </style>

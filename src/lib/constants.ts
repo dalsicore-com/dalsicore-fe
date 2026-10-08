@@ -1,7 +1,7 @@
 export const SITE = {
   title: "Dalsicore",
   description:
-    "Dalsicore is a solo-founded Android studio in Indonesia. 20+ apps shipped, one live product, and an applied-research stream — all built AI-native with Claude.",
+    "Dalsicore is a solo Android studio in Indonesia. 20+ apps shipped, one live product, and an applied-research stream, all built AI-native with Claude.",
   url: "https://dalsicore.com"
 };
 
