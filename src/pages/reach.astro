@@ -21,6 +21,10 @@ const rows = Object.entries(METRICS.perApp)
   .sort((a, b) => b.peak - a.peak);
 
 const topCountries = METRICS.countries.slice(0, 12);
+
+const ga4 = METRICS.ga4;
+const asBars = (list: { name: string; v: number }[]) =>
+  list.map((x) => ({ name: x.name, peak: x.v }));
 ---
 
 <BaseLayout
@@ -128,6 +132,98 @@ const topCountries = METRICS.countries.slice(0, 12);
       </p>
     </div>
   </section>
+
+  <!-- Analytics (GA4 / Firebase) -->
+  <section class="section band">
+    <div class="container">
+      <p class="eyebrow reveal">Analytics</p>
+      <h2 class="section-title reveal delay-1">Product analytics, 2020 to 2026.</h2>
+      <p class="lead reach-lead reveal delay-2">
+        A second, separate source: Google Analytics for Firebase on the combined Android property.
+        Where the Play figures count devices, this counts the people who actually opened the apps,{" "}
+        {fmtDate(ga4.range.start)} to {fmtDate(ga4.range.end)}. Different tool, different metric, so
+        it sits apart from the Play layer above. The two are never added together.
+      </p>
+
+      <dl class="stats reveal delay-2">
+        <div>
+          <dt>Peak monthly active (30d)</dt>
+          <dd>{ga4.peak.mau.value.toLocaleString("en-US")}</dd>
+          <dd class="sub">{fmtDate(ga4.peak.mau.date)}</dd>
+        </div>
+        <div>
+          <dt>Peak weekly active (7d)</dt>
+          <dd>{ga4.peak.wau.value.toLocaleString("en-US")}</dd>
+          <dd class="sub">{fmtDate(ga4.peak.wau.date)}</dd>
+        </div>
+        <div>
+          <dt>Peak daily active (1d)</dt>
+          <dd>{ga4.peak.dau.value.toLocaleString("en-US")}</dd>
+          <dd class="sub">{fmtDate(ga4.peak.dau.date)}</dd>
+        </div>
+        <div>
+          <dt>New users, all time</dt>
+          <dd>{ga4.newUsersTotal.toLocaleString("en-US")}</dd>
+          <dd class="sub">across all apps</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="chart-head reveal">
+      <h2 class="group-title">Monthly active users</h2>
+      <p class="muted">Rolling 30-day active users. Weekly samples.</p>
+    </div>
+    <AreaChart
+      series={ga4.series}
+      id="ga4-mau"
+      label="Monthly active users, 2020 to 2026"
+      height={280}
+    />
+    <p class="note reveal">
+      The product analytics peak at <strong>{ga4.peak.mau.value.toLocaleString("en-US")}</strong>{" "}
+      monthly active users on {fmtDate(ga4.peak.mau.date)}, then settle as the apps were retired.
+    </p>
+  </section>
+
+  <section class="section container">
+    <h2 class="group-title reveal">Where the users were</h2>
+    <p class="muted reveal">
+      Active users by country ({ga4.countriesCount} countries in total). Google Analytics figures,
+      separate from the Play table above.
+    </p>
+    <div class="reveal">
+      <BrandBars items={ga4.countries.map((c) => ({ name: c.name, peak: c.active }))} />
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="ga4-grid reveal">
+      <div>
+        <h3 class="mini-title">Languages</h3>
+        <BrandBars items={asBars(ga4.languages)} />
+      </div>
+      <div>
+        <h3 class="mini-title">Age</h3>
+        <BrandBars items={asBars(ga4.ages)} />
+      </div>
+      <div>
+        <h3 class="mini-title">First touch channel</h3>
+        <BrandBars items={asBars(ga4.channels)} />
+      </div>
+    </div>
+    <div class="source surface reveal note-src">
+      <h2>About the analytics</h2>
+      <p>
+        Source: Google Analytics 4 (Firebase), property "Android App", {fmtDate(ga4.range.start)} to{" "}
+        {fmtDate(ga4.range.end)}. Active users are Google's rolling windows: 30-day, 7-day and 1-day.
+        Country, language, age and channel come from Google's own reports. Revenue fields in the
+        export are excluded here because the export does not state a currency, and a number without
+        a unit is worse than no number.
+      </p>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
@@ -232,6 +328,23 @@ const topCountries = METRICS.countries.slice(0, 12);
     font-size: 0.95rem;
   }
 
+  .ga4-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+  .mini-title {
+    margin: 0 0 var(--space-3);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    font-weight: 600;
+  }
+  .note-src {
+    margin-top: var(--space-6);
+  }
+
   @media (max-width: 760px) {
     .stats {
       grid-template-columns: repeat(2, 1fr);
@@ -239,6 +352,10 @@ const topCountries = METRICS.countries.slice(0, 12);
     }
     .stats dd {
       font-size: 1.5rem;
+    }
+    .ga4-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
     }
   }
 </style>

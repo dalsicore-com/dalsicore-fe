@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """
-Regenerate src/data/metrics.ts from the raw Google Play Console exports.
+Regenerate src/data/metrics.ts from the raw Google Play Console and
+Google Analytics 4 / Firebase exports.
 
-Source folder is the user's private data directory (NOT part of this repo):
+Two clearly separated layers:
 
-    /home/baobaojingyi/Documents/Daftar Claude startup/Data aplikasi/<App>/
-        Semua negara_daerah, <country>, <country>.csv
+  1. PLAY  - per-app "installed audience" (devices with the app installed), daily,
+             2021-2026. Source: Data aplikasi/<App>/Semua negara_*.csv
 
-Each row of those CSVs is a day and each value is the Play Console
-"installed audience" for that day (the number of devices that had the app
-installed), per country plus a combined column.
+  2. GA4   - analytics for the combined "Android App" property, 2020-2026:
+             MAU/WAU/DAU, new users, countries, languages, ages, channels.
+             Source: Firebase_overview.csv, Acquisition.csv,
+                     User_attributes_overview.csv, Demographic_details_Country.csv
 
-The script aggregates a combined series across all apps, a per-country peak
-table, and a per-app series, then downsamples everything to weekly samples
-(Mondays) so the page stays light. Output is a single typed TS module.
+The two are different metrics measured by different tools. They are never
+summed or mixed. Everything is downsampled to weekly samples (Mondays) so the
+page stays light.
 
 Usage:
     python3 scripts/build-metrics.py
@@ -25,7 +27,7 @@ import json
 import os
 import re
 
-SRC = "/home/baobaojingyi/Documents/Daftar Claude startup/Data aplikasi"
+SRC = "/home/baobaojingyi/Documents/Daftar Claude startup"
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "data", "metrics.ts")
 
 MONTHS = {"Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "Mei": 5, "Jun": 6,
@@ -53,6 +55,8 @@ COUNTRY = {
     "Pakistan": "Pakistan",
 }
 
+GA4_START = datetime.date(2020, 9, 10)
+
 
 def parse_date(s):
     m = re.match(r"(\d{1,2})\s+(\w+)\s+(\d{4})", s.strip())
@@ -73,17 +77,46 @@ def parse_int(x):
 
 
 def weekly(pairs):
-    out = []
-    for i, (dt, v) in enumerate(pairs):
-        if dt.weekday() == 0 or i == len(pairs) - 1:
-            out.append((dt, v))
+    return [p for i, p in enumerate(pairs) if p[0].weekday() == 0 or i == len(pairs) - 1]
+
+
+def sections(path):
+    """CSV exports put several tables in one file, separated by '#' comment rows."""
+    rows = list(csv.reader(open(path, encoding="utf-8-sig", errors="replace")))
+    out, cur = [], []
+    for r in rows:
+        if r and r[0].startswith("#"):
+            if cur:
+                out.append(cur)
+                cur = []
+            continue
+        if r:
+            cur.append(r)
+    if cur:
+        out.append(cur)
     return out
 
 
-def main():
+def nth(sec, col=1):
+    """Map Nth-day index -> value for a daily export section."""
+    out = {}
+    for r in sec[1:]:
+        try:
+            out[int(r[0])] = float(r[col])
+        except (ValueError, IndexError):
+            pass
+    return out
+
+
+def day(k):
+    return GA4_START + datetime.timedelta(days=k)
+
+
+def build_play():
     apps = {}
-    for folder in sorted(os.listdir(SRC)):
-        path = os.path.join(SRC, folder)
+    data_dir = os.path.join(SRC, "Data aplikasi")
+    for folder in sorted(os.listdir(data_dir)):
+        path = os.path.join(data_dir, folder)
         if not os.path.isdir(path) or folder not in SLUG:
             continue
         files = [f for f in os.listdir(path) if "Semua negara" in f]
@@ -138,7 +171,7 @@ def main():
             "countries": cpp,
         }
 
-    metrics = {
+    return {
         "range": {"start": dates[0].isoformat(), "end": dates[-1].isoformat(), "days": len(dates)},
         "peak": {"date": peak[0].isoformat(), "value": peak[1]},
         "current": combined[-1][1],
@@ -149,14 +182,66 @@ def main():
         "perApp": per_app,
     }
 
+
+def build_ga4():
+    fb = sections(os.path.join(SRC, "Firebase_overview.csv"))
+    acq = sections(os.path.join(SRC, "Acquisition.csv"))
+    attrs = sections(os.path.join(SRC, "User_attributes_overview.csv"))
+    dem = [r for r in csv.reader(open(os.path.join(SRC, "Demographic_details_Country.csv"), encoding="utf-8-sig"))
+           if r and not r[0].startswith("#")]
+
+    mau, wau, dau = nth(fb[0], 1), nth(fb[0], 2), nth(fb[0], 3)
+    newu = nth(acq[0], 1)
+
+    def peak(d):
+        k = max(d, key=lambda x: d[x])
+        return {"date": day(k).isoformat(), "value": round(d[k])}
+
+    countries = []
+    for r in dem[1:]:
+        try:
+            countries.append({
+                "name": r[0],
+                "active": int(r[1]),
+                "newUsers": int(r[2]),
+                "engagementRate": round(float(r[4]), 3),
+                "engagementSeconds": round(float(r[6])),
+            })
+        except (ValueError, IndexError):
+            pass
+    countries = sorted(countries, key=lambda x: -x["active"])[:14]
+
+    mau_pairs = sorted((day(k), v) for k, v in mau.items())
+    new_pairs = sorted((day(k), v) for k, v in newu.items())
+
+    return {
+        "range": {"start": day(min(mau)).isoformat(), "end": day(max(mau)).isoformat()},
+        "peak": {"mau": peak(mau), "wau": peak(wau), "dau": peak(dau), "newUsers": peak(newu)},
+        "newUsersTotal": round(sum(newu.values())),
+        "latest": {"mau": round(mau[max(mau)]), "wau": round(wau[max(wau)]), "dau": round(dau[max(dau)])},
+        "countriesCount": len(dem) - 1,
+        "series": [{"d": d.isoformat(), "v": round(v)} for d, v in weekly(mau_pairs)],
+        "newSeries": [{"d": d.isoformat(), "v": round(v)} for d, v in weekly(new_pairs) if v > 0],
+        "countries": countries,
+        "languages": [{"name": r[0], "v": int(r[1])} for r in attrs[6][1:7]],
+        "ages": [{"name": r[0], "v": int(r[1])} for r in attrs[5][1:]],
+        "channels": [{"name": r[0], "v": int(r[1])} for r in acq[1][1:]],
+    }
+
+
+def emit(play, ga4):
     ts = json.dumps
     L = []
-    L.append("// Dalsicore metrics. Generated by scripts/build-metrics.py from the raw")
-    L.append("// Google Play Console exports (see /home/baobaojingyi/Documents/Daftar Claude startup).")
+    L.append("// Dalsicore metrics. Generated by scripts/build-metrics.py.")
     L.append("//")
-    L.append("// METRIC DEFINITION: each value is the AUDIENCE OF USERS WITH THE APP INSTALLED")
-    L.append('// on that day, the Play Console "installed audience" series, not a cumulative install')
-    L.append(f"// count. It rises with installs and falls with uninstalls. Weekly samples cover {metrics['range']['start']} to {metrics['range']['end']}.")
+    L.append("// Two layers, never mixed:")
+    L.append("//   PLAY - Google Play Console 'installed audience' per app (devices with the")
+    L.append("//          app installed on a given day), 2021-2026.")
+    L.append("//   GA4  - Google Analytics / Firebase for the combined Android property:")
+    L.append("//          MAU/WAU/DAU, new users, countries, languages, ages, channels, 2020-2026.")
+    L.append("//")
+    L.append("// Weekly samples (Mondays). See /home/baobaojingyi/Documents/Daftar Claude startup")
+    L.append("// for the raw exports.")
     L.append("")
     L.append("export interface MetricPoint { d: string; v: number }")
     L.append("export interface CountryStat { name: string; peak: number; latest: number; apps: number }")
@@ -167,18 +252,27 @@ def main():
     L.append("  series: MetricPoint[];")
     L.append("  countries: { name: string; peak: number; latest: number }[];")
     L.append("}")
+    L.append("export interface Ga4Country {")
+    L.append("  name: string;")
+    L.append("  active: number;")
+    L.append("  newUsers: number;")
+    L.append("  engagementRate: number;")
+    L.append("  engagementSeconds: number;")
+    L.append("}")
+    L.append("export interface Labeled { name: string; v: number }")
+    L.append("export interface PeakPoint { date: string; value: number }")
     L.append("")
     L.append("export const METRICS = {")
-    L.append(f'  range: {ts(metrics["range"])},')
-    L.append(f'  peak: {ts(metrics["peak"])},')
-    L.append(f'  current: {metrics["current"]},')
-    L.append(f'  appsTracked: {metrics["appsTracked"]},')
-    L.append(f'  countriesCount: {metrics["countriesCount"]},')
-    L.append(f'  countries: {ts(metrics["countries"])} as CountryStat[],')
-    L.append("  /** Combined installed audience across all tracked apps (weekly samples). */")
-    L.append(f'  series: {ts(metrics["series"])} as MetricPoint[],')
+    L.append(f'  range: {ts(play["range"])},')
+    L.append(f'  peak: {ts(play["peak"])},')
+    L.append(f'  current: {play["current"]},')
+    L.append(f'  appsTracked: {play["appsTracked"]},')
+    L.append(f'  countriesCount: {play["countriesCount"]},')
+    L.append(f'  countries: {ts(play["countries"])} as CountryStat[],')
+    L.append("  /** Combined installed audience across all tracked apps (weekly). */")
+    L.append(f'  series: {ts(play["series"])} as MetricPoint[],')
     L.append("  perApp: {")
-    for slug, v in per_app.items():
+    for slug, v in play["perApp"].items():
         L.append(f'    "{slug}": {{')
         L.append(f'      peak: {v["peak"]},')
         L.append(f'      peakDate: "{v["peakDate"]}",')
@@ -187,13 +281,35 @@ def main():
         L.append(f'      countries: {ts(v["countries"])}')
         L.append("    },")
     L.append("  } as Record<string, AppMetric>,")
+    L.append("")
+    L.append("  ga4: {")
+    L.append(f'    range: {ts(ga4["range"])},')
+    L.append(f'    peak: {ts(ga4["peak"])},')
+    L.append(f'    newUsersTotal: {ga4["newUsersTotal"]},')
+    L.append(f'    latest: {ts(ga4["latest"])},')
+    L.append(f'    countriesCount: {ga4["countriesCount"]},')
+    L.append(f'    series: {ts(ga4["series"])} as MetricPoint[],')
+    L.append(f'    newSeries: {ts(ga4["newSeries"])} as MetricPoint[],')
+    L.append(f'    countries: {ts(ga4["countries"])} as Ga4Country[],')
+    L.append(f'    languages: {ts(ga4["languages"])} as Labeled[],')
+    L.append(f'    ages: {ts(ga4["ages"])} as Labeled[],')
+    L.append(f'    channels: {ts(ga4["channels"])} as Labeled[]')
+    L.append("  }")
     L.append("};")
     L.append("")
     L.append("export const metricsFor = (slug: string): AppMetric | undefined => METRICS.perApp[slug];")
-
     open(OUT, "w").write("\n".join(L))
+
+
+def main():
+    play = build_play()
+    ga4 = build_ga4()
+    emit(play, ga4)
     print(f"wrote {OUT}")
-    print(f"  apps={len(apps)} countries={len(countries)} peak={peak[1]} on {peak[0]} points={len(metrics['series'])}")
+    print(f"  PLAY apps={play['appsTracked']} countries={play['countriesCount']} "
+          f"peak={play['peak']['value']} on {play['peak']['date']} points={len(play['series'])}")
+    print(f"  GA4  peak_mau={ga4['peak']['mau']['value']} new_users_total={ga4['newUsersTotal']} "
+          f"countries={ga4['countriesCount']}")
 
 
 if __name__ == "__main__":
