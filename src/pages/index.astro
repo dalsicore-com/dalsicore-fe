@@ -2,20 +2,19 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/home/Hero.astro";
-import ProjectCard from "../components/portfolio/ProjectCard.astro";
+import AppCard from "../components/home/AppCard.astro";
 import BlogCard from "../components/blog/BlogCard.astro";
-import ResearchCard from "../components/research/ResearchCard.astro";
+import { APPS, LIVE_APPS, RETIRED_APPS } from "../data/apps";
 import { BLOG_SOURCE } from "../lib/constants";
 import { getFirstImageFromMarkdown } from "../lib/blog";
 import { getMediumPosts } from "../lib/medium";
 
-const portfolio = (await getCollection("portfolio"))
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 2);
+const featured = APPS.filter((a) => a.featured);
+const archivePreview = RETIRED_APPS.slice(0, 6);
 
 const blog =
   BLOG_SOURCE === "medium"
-    ? (await getMediumPosts()).slice(0, 2).map((entry) => ({
+    ? (await getMediumPosts()).slice(0, 3).map((entry) => ({
         slug: entry.slug,
         title: entry.title,
         excerpt: entry.excerpt,
@@ -26,7 +25,7 @@ const blog =
       }))
     : (await getCollection("blog", ({ data }) => !data.draft))
         .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-        .slice(0, 2)
+        .slice(0, 3)
         .map((entry) => ({
           slug: entry.slug,
           title: entry.data.title,
@@ -38,170 +37,212 @@ const blog =
         }));
 
 const research = (await getCollection("research")).slice(0, 1);
+const liveCount = LIVE_APPS.length;
 ---
 
-<BaseLayout title="Dalsicore">
+<BaseLayout>
   <Hero />
 
-  <section class="section">
+  <!-- Latest -->
+  <section class="section container">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow reveal">Latest writing</p>
+        <h2 class="section-title reveal delay-1">Notes from the build</h2>
+      </div>
+      <a class="text-link reveal delay-2" href="/blog">All posts <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="grid-3 reveal delay-2">
+      {
+        blog.map((entry, idx) => (
+          <BlogCard
+            href={`/blog/${entry.slug}`}
+            title={entry.title}
+            excerpt={entry.excerpt}
+            publishedAt={entry.publishedAt}
+            author={entry.author}
+            thumbnail={entry.thumbnail}
+            tags={entry.tags}
+            index={idx}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- What we build -->
+  <section class="section band">
     <div class="container">
-      <p class="eyebrow reveal">What Dalsicore Builds</p>
-      <h2 class="section-title reveal delay-1">Portfolio</h2>
-      <p class="muted intro reveal delay-2">
-          Android apps, experiments, and prototypes built to turn ideas into something people can actually use.
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow reveal">What we build</p>
+          <h2 class="section-title reveal delay-1">Products</h2>
+        </div>
+        <a class="text-link reveal delay-2" href="/portfolio">All products <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="grid-3 reveal delay-2">
+        {featured.map((app) => <AppCard app={app} />)}
+      </div>
+
+      <p class="muted aside reveal delay-3">
+        Plus an applied-research stream —{" "}
+        <a class="inline-link" href="/research">{research[0]?.data.shortTitle ?? "Dalsilens"}</a>{" "}
+        — bringing colour-blindness assistance to mobile.
       </p>
-      <div class="grid reveal delay-3">
-        {
-          portfolio.map((entry, idx) => (
-            <ProjectCard
-              href={`/portfolio/${entry.slug}`}
-              title={entry.data.title}
-              summary={entry.data.summary}
-              status={entry.data.status.replace("-", " ")}
-              stack={entry.data.stack}
-              index={idx}
-            />
-          ))
-        }
-      </div>
-      <div class="section-cta reveal delay-3">
-        <a href="/portfolio">Explore all projects</a>
-      </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow reveal">Research Direction</p>
-      <h2 class="section-title reveal delay-1">Applied Research</h2>
-      <div class="grid single reveal delay-2">
-        {
-          research.map((entry) => (
-            <ResearchCard
-              href={`/research/${entry.slug}`}
-              title={entry.data.title}
-              abstract={entry.data.abstract}
-              field={entry.data.field}
-              status={entry.data.status}
-              platform={entry.data.platform}
-              tags={entry.data.tags}
-            />
-          ))
-        }
-      </div>
-      <div class="section-cta reveal delay-3">
-        <a href="/research">View research stream</a>
-      </div>
+  <!-- The honest archive -->
+  <section class="section container">
+    <div class="archive-head reveal">
+      <p class="eyebrow">The honest archive</p>
+      <h2 class="section-title">We shipped 20+ apps. Most failed.</h2>
+      <p class="lead">
+        Between 2022 and 2024 we published app after app under our earlier name,{" "}
+        <strong>Euni Dev</strong>. Almost none found an audience. We kept the receipts — not to
+        flex, but because shipping is a skill and failure is where it came from.
+      </p>
+      <a class="btn btn-ghost" href="/archive">Open the archive</a>
+    </div>
+
+    <div class="grid-3 reveal delay-2">
+      {archivePreview.map((app) => <AppCard app={app} />)}
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow reveal">Blog</p>
-      <h2 class="section-title reveal delay-1">Latest Writing</h2>
-      <div class="grid reveal delay-2">
-        {
-          blog.map((entry, idx) => (
-            <BlogCard
-              href={`/blog/${entry.slug}`}
-              title={entry.title}
-              excerpt={entry.excerpt}
-              publishedAt={entry.publishedAt}
-              author={entry.author}
-              thumbnail={entry.thumbnail}
-              tags={entry.tags}
-              index={idx}
-            />
-          ))
-        }
+  <!-- Stats -->
+  <section class="section container">
+    <div class="stats surface reveal">
+      <div class="stat">
+        <strong>20+</strong>
+        <span>Apps shipped</span>
       </div>
-      <div class="section-cta reveal delay-3">
-        <a href="/blog">Read more writing</a>
+      <div class="stat">
+        <strong>{liveCount}</strong>
+        <span>Live product</span>
       </div>
+      <div class="stat">
+        <strong>100%</strong>
+        <span>Built with Claude</span>
+      </div>
+      <div class="stat">
+        <strong>2022</strong>
+        <span>Building since</span>
+      </div>
+    </div>
+
+    <div class="cta reveal delay-1">
+      <div>
+        <h2 class="section-title">Building something with AI?</h2>
+        <p class="muted">Want to compare notes on shipping AI-native products? Say hello.</p>
+      </div>
+      <a class="btn btn-primary" href="/contact">Get in touch</a>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .intro {
-    margin-top: var(--space-3);
-    max-width: 64ch;
+  .sec-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
   }
 
-  .grid {
-    margin-top: var(--space-5);
+  .band {
+    background: var(--bg-1);
+    border-top: 1px solid var(--border-0);
+    border-bottom: 1px solid var(--border-0);
+  }
+
+  .grid-3 {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-4);
   }
 
-  .grid.single {
-    grid-template-columns: 1fr;
+  .aside {
+    margin-top: var(--space-5);
+    max-width: 70ch;
   }
 
-  .section-cta {
-    margin-top: var(--space-4);
-  }
-
-  .section-cta a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.16rem 0.1rem;
-    text-decoration: none;
+  .inline-link {
     color: var(--accent-1);
-    font-weight: 700;
-    transition: transform 0.18s ease, color 0.18s ease;
-    will-change: transform;
+    font-weight: 600;
+    text-decoration: none;
   }
 
-  .section-cta a::after {
-    content: "↗";
-    font-size: 0.85rem;
+  .inline-link:hover {
+    text-decoration: underline;
   }
 
-  .section-cta a:hover {
-    color: var(--text-0);
+  .archive-head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    max-width: 62ch;
+  }
+
+  .archive-head .btn {
+    margin-top: var(--space-2);
+  }
+
+  .stats {
+    padding: var(--space-6) var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .stat {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .stat strong {
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .stat span {
+    color: var(--text-2);
+    font-size: 0.86rem;
+  }
+
+  .cta {
+    margin-top: var(--space-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .cta .section-title {
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+  }
+
+  .cta p {
+    margin: var(--space-2) 0 0;
   }
 
   @media (max-width: 960px) {
-    .grid {
+    .grid-3 {
       grid-template-columns: 1fr;
+    }
+
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sec-head {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>
-
-<script>
-  const magneticLinks = Array.from(document.querySelectorAll(".section-cta a"));
-
-  const resetLink = (link) => {
-    link.style.transform = "translate3d(0, 0, 0)";
-  };
-
-  magneticLinks.forEach((link) => {
-    link.addEventListener("mousemove", (event) => {
-      const rect = link.getBoundingClientRect();
-      const x = event.clientX - rect.left - rect.width / 2;
-      const y = event.clientY - rect.top - rect.height / 2;
-      const moveX = Math.max(-8, Math.min(8, x * 0.18));
-      const moveY = Math.max(-6, Math.min(6, y * 0.18));
-      link.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
-    });
-
-    link.addEventListener("mouseleave", () => {
-      resetLink(link);
-    });
-  });
-
-  const orbit = document.querySelector("[data-parallax]");
-  if (orbit) {
-    const strength = Number(orbit.getAttribute("data-parallax")) || 0.1;
-    window.addEventListener("mousemove", (event) => {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const dx = (event.clientX - centerX) * strength;
-      const dy = (event.clientY - centerY) * strength;
-      orbit.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
-    });
-  }
-</script>

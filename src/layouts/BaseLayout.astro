@@ -25,6 +25,7 @@ const {
 } = Astro.props;
 
 const pageUrl = canonicalUrl ?? new URL(Astro.url.pathname, SITE.url).toString();
+const ogImage = new URL("/brand/og.png", SITE.url).toString();
 ---
 
 <!doctype html>
@@ -34,9 +35,9 @@ const pageUrl = canonicalUrl ?? new URL(Astro.url.pathname, SITE.url).toString()
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" href="/svg/dalsicore_icon.svg" type="image/svg+xml" />
-    <link rel="shortcut icon" href="/svg/dalsicore_icon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#0d1117" />
+    <link rel="icon" href="/brand/icon-dev.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/brand/icon-dev.png" />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href={pageUrl} />
     <meta name="robots" content="index,follow,max-image-preview:large" />
 
@@ -45,10 +46,12 @@ const pageUrl = canonicalUrl ?? new URL(Astro.url.pathname, SITE.url).toString()
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
     {author && <meta property="article:author" content={author} />}

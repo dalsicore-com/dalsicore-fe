@@ -1,16 +1,23 @@
 export const SITE = {
   title: "Dalsicore",
   description:
-    "Dalsicore builds Kotlin-based mobile apps, practical research experiments, and innovative digital products.",
-  url: "https://dalsicore.dev"
+    "Dalsicore is a solo-founded Android studio in Indonesia. 20+ apps shipped, one live product, and an applied-research stream — all built AI-native with Claude.",
+  url: "https://dalsicore.com"
+};
+
+export const CONTACT = {
+  email: "hello@dalsicore.com",
+  github: "https://github.com/dalsicore",
+  play: "https://play.google.com/store/apps/developer?id=Dalsicore"
 };
 
 export const BLOG_SOURCE: "markdown" | "medium" = "markdown";
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/blog", label: "Blog" },
+  { href: "/portfolio", label: "Products" },
+  { href: "/archive", label: "Archive" },
   { href: "/research", label: "Research" },
-  { href: "/contact", label: "Contact" }
+  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" }
 ];

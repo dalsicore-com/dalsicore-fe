@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppCard from "../components/home/AppCard.astro";
+import { RETIRED_APPS } from "../data/apps";
+import { CONTACT } from "../lib/constants";
+
+const apps = RETIRED_APPS;
+const years = [...new Set(apps.map((a) => a.shipped))].sort();
+const span = `${years[0]}–${years[years.length - 1]}`;
+---
+
+<BaseLayout
+  title="Archive | Dalsicore"
+  description="Part of the 20+ apps Dalsicore shipped between 2022 and 2025 — most of which never found an audience. Kept as an honest record."
+>
+  <section class="section container">
+    <p class="eyebrow reveal">The honest archive</p>
+    <h1 class="section-title reveal delay-1">20+ apps shipped. Most of them failed.</h1>
+    <p class="lead intro reveal delay-2">
+      Before Dalsicore, we shipped under the name <strong>Euni Dev</strong>. This archive holds the
+      {apps.length} listings we still have assets for — part of 20+ apps published between {span}.
+      Almost none found an audience, and we retired the listings once they stopped making sense to
+      maintain.
+    </p>
+    <p class="lead intro reveal delay-2">
+      We're keeping them visible on purpose. Shipping is a skill, and this is where it came from.
+    </p>
+
+    <div class="callout surface reveal delay-3">
+      <div>
+        <h2>A live record</h2>
+        <p class="muted">
+          These apps were developed under one Google Play account, later rebranded to Dalsicore.
+          The developer page and a live product remain public.
+        </p>
+      </div>
+      <div class="callout-actions">
+        <a class="btn btn-ghost" href={CONTACT.play} target="_blank" rel="noopener noreferrer">
+          Play developer page
+        </a>
+        <a class="btn btn-primary" href="/portfolio">Current products</a>
+      </div>
+    </div>
+
+    <div class="grid reveal delay-3">
+      {apps.map((app) => <AppCard app={app} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    max-width: 66ch;
+  }
+
+  .intro + .intro {
+    margin-top: var(--space-3);
+  }
+
+  .callout {
+    margin: var(--space-6) 0 var(--space-6);
+    padding: var(--space-5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .callout h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.25rem;
+  }
+
+  .callout p {
+    margin: 0;
+    max-width: 52ch;
+    font-size: 0.94rem;
+  }
+
+  .callout-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

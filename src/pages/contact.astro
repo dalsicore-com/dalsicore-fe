@@ -1,24 +1,37 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { CONTACT } from "../lib/constants";
 ---
 
-<BaseLayout title="Contact | Dalsicore" description="Connect with Dalsicore for collaborations and opportunities.">
+<BaseLayout
+  title="Contact | Dalsicore"
+  description="Get in touch with Dalsicore — feedback, collaboration, or questions about what we build."
+>
   <section class="section container">
-    <h1 class="section-title reveal delay-1">Contact</h1>
-    <p class="muted intro reveal delay-2">
-        Whether you have questions about our research, or want to give feedback on our apps, feel free to reach out and get in touch.
+    <p class="eyebrow reveal">Contact</p>
+    <h1 class="section-title reveal delay-1">Let's talk</h1>
+    <p class="lead intro reveal delay-2">
+      Questions about the products we build, feedback on an app, or want to compare notes on
+      shipping AI-native software? Reach out.
     </p>
 
     <div class="cards reveal delay-3">
-      <a class="surface card" href="mailto:hello@dalsicore.com">
+      <a class="surface card" href={`mailto:${CONTACT.email}`}>
         <h2>Email</h2>
-        <p>hello@dalsicore.com</p>
+        <p>{CONTACT.email}</p>
+        <span class="go" aria-hidden="true">→</span>
       </a>
-      <a class="surface card" href="https://github.com/dalsicore" target="_blank" rel="noreferrer">
+      <a class="surface card" href={CONTACT.github} target="_blank" rel="noopener noreferrer">
         <h2>GitHub</h2>
         <p>github.com/dalsicore</p>
+        <span class="go" aria-hidden="true">→</span>
       </a>
-      <div class="surface card">
+      <a class="surface card" href={CONTACT.play} target="_blank" rel="noopener noreferrer">
+        <h2>Google Play</h2>
+        <p>Dalsicore developer page</p>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <div class="surface card static">
         <h2>Location</h2>
         <p>Indonesia</p>
       </div>
@@ -28,40 +41,56 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <style>
   .intro {
-    margin-top: var(--space-3);
-    max-width: 60ch;
+    max-width: 58ch;
   }
 
   .cards {
-    margin-top: var(--space-5);
+    margin-top: var(--space-6);
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-4);
+    max-width: 820px;
   }
 
   .card {
+    position: relative;
     padding: var(--space-5);
     text-decoration: none;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   }
 
-  .card:hover {
-    border-color: var(--accent-0);
-    transform: translateY(-2px);
+  .card:not(.static):hover {
+    transform: translateY(-3px);
+    border-color: var(--border-1);
+    box-shadow: var(--shadow-1);
   }
 
   h2 {
     margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
   }
 
   p {
     margin: var(--space-2) 0 0;
     color: var(--text-1);
+    font-size: 0.95rem;
   }
 
-  @media (max-width: 900px) {
+  .go {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    color: var(--text-2);
+    transition: transform 0.18s ease, color 0.18s ease;
+  }
+
+  .card:not(.static):hover .go {
+    transform: translateX(3px);
+    color: var(--accent-1);
+  }
+
+  @media (max-width: 760px) {
     .cards {
       grid-template-columns: 1fr;
     }

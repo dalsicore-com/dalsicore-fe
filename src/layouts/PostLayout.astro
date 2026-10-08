@@ -65,10 +65,10 @@ const { title, excerpt, publishedAt, author, tags = [], sourceUrl } = Astro.prop
     align-items: center;
     gap: 0.45rem;
     margin-top: var(--space-2);
-    border: 1px solid rgba(230, 167, 110, 0.62);
+    border: 1px solid var(--border-1);
     border-radius: 8px;
     padding: 0.45rem 0.78rem;
-    background: linear-gradient(180deg, rgba(230, 167, 110, 0.2), rgba(230, 167, 110, 0.1));
+    background: var(--surface-1);
     color: var(--accent-1);
     font-family: var(--font-sans);
     font-size: 0.8rem;
@@ -88,7 +88,7 @@ const { title, excerpt, publishedAt, author, tags = [], sourceUrl } = Astro.prop
   .to-medium:hover {
     border-color: var(--accent-0);
     color: var(--text-0);
-    background: linear-gradient(180deg, rgba(230, 167, 110, 0.28), rgba(230, 167, 110, 0.14));
+    background: var(--surface-2);
     transform: translateY(-1px);
   }
 
@@ -121,7 +121,7 @@ const { title, excerpt, publishedAt, author, tags = [], sourceUrl } = Astro.prop
     overflow-x: auto;
     border: 1px solid var(--border-0);
     border-radius: var(--radius-1);
-    background: rgba(0, 0, 0, 0.28);
+    background: var(--surface-1);
     max-width: 100%;
   }
 

@@ -1,24 +1,42 @@
+/*
+ * Design tokens.
+ *
+ * Direction: light, editorial, neutral — inspired by research-lab sites such as
+ * seed.bytedance.com. Near-black type on white, generous whitespace, a single
+ * blue accent for links and one warm "blush" tone carried over from the brand
+ * icon. Keep the historical variable names so component styles keep working.
+ */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --bg-0: #14100d;
-  --bg-1: #1a1310;
-  --surface-0: rgba(41, 31, 26, 0.7);
-  --surface-1: rgba(49, 36, 31, 0.9);
-  --surface-2: #2a1f1a;
-  --border-0: rgba(214, 170, 131, 0.2);
-  --border-1: rgba(227, 187, 149, 0.32);
-  --text-0: #f8eee3;
-  --text-1: #dbc8b3;
-  --text-2: #b49578;
-  --accent-0: #e6a76e;
-  --accent-1: #f2be8c;
-  --accent-2: #d8c08f;
-  --brand-mark: #f0ba85;
-  --danger: #ff6f91;
+  /* Surfaces */
+  --bg-0: #ffffff;
+  --bg-1: #f8f8f8;
+  --bg-2: #eeeff1;
+  --surface-0: #ffffff;
+  --surface-1: #f9f9fb;
+  --surface-2: #f0f0f3;
 
-  --shadow-0: 0 14px 36px rgba(8, 5, 4, 0.32);
+  /* Lines */
+  --border-0: #e7e7e7;
+  --border-1: #d6d6d9;
 
+  /* Type */
+  --text-0: #212121;
+  --text-1: rgba(33, 33, 33, 0.78);
+  --text-2: #8b8d98;
+
+  /* Accents */
+  --accent-0: #1e1f24; /* near-black: primary buttons */
+  --accent-1: #3c56f4; /* lab blue: links, hover */
+  --accent-2: #6b6d7a; /* muted grey */
+  --brand-mark: #d98a86; /* blush from the brand icon */
+
+  /* Elevation */
+  --shadow-0: 0 1px 2px rgba(16, 24, 40, 0.04), 0 10px 26px rgba(16, 24, 40, 0.05);
+  --shadow-1: 0 18px 44px rgba(16, 24, 40, 0.1);
+
+  /* Rhythm */
   --space-1: 0.35rem;
   --space-2: 0.6rem;
   --space-3: 0.9rem;
@@ -28,13 +46,14 @@
   --space-7: 3rem;
   --space-8: 4.2rem;
 
-  --radius-1: 6px;
-  --radius-2: 10px;
-  --radius-3: 14px;
+  --radius-1: 8px;
+  --radius-2: 14px;
+  --radius-3: 22px;
+  --radius-pill: 999px;
 
-  --max-content: 980px;
+  --max-content: 1200px;
 
-  --font-sans: "Nunito Sans", "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "Consolas", monospace;
-  --font-serif: "Nunito Sans", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Nunito Sans", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-serif: "Inter", "Nunito Sans", -apple-system, "Segoe UI", system-ui, sans-serif;
 }

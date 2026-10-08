@@ -1,7 +1,7 @@
 @keyframes riseIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
 
   to {
@@ -10,56 +10,25 @@
   }
 }
 
-@keyframes drift {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(8px, -10px, 0) scale(1.03);
-  }
-
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-@keyframes borderFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-@keyframes glowPulse {
-  0%,
-  100% {
-    box-shadow: none;
-  }
-
-  50% {
-    box-shadow: none;
-  }
-}
-
 .reveal {
   opacity: 0;
-  transform: translateY(8px);
-  animation: riseIn 0.45s ease-out forwards;
+  transform: translateY(10px);
+  animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .delay-1 {
-  animation-delay: 0.12s;
+  animation-delay: 0.08s;
 }
 
 .delay-2 {
-  animation-delay: 0.2s;
+  animation-delay: 0.16s;
 }
 
 .delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
   animation-delay: 0.32s;
 }
 
@@ -68,5 +37,10 @@
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
