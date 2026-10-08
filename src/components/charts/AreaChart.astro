@@ -1,0 +1,247 @@
+---
+/**
+ * Area chart, server-rendered as inline SVG.
+ *
+ * Editorial rather than dashboard-y: a single accent line, a soft wash beneath
+ * it, hairline gridlines and no chart junk. Hovering shows a vertical guide and
+ * a value readout (progressive enhancement, no framework).
+ */
+import type { MetricPoint } from "../../data/metrics";
+
+interface Props {
+  series: MetricPoint[];
+  height?: number;
+  width?: number;
+  accent?: string;
+  /** Round the y axis up to a tidy number instead of the raw max. */
+  tidy?: boolean;
+  label?: string;
+  id?: string;
+}
+
+const {
+  series,
+  height = 260,
+  width = 1000,
+  accent = "#3c56f4",
+  tidy = true,
+  label = "Metric over time",
+  id = "chart",
+} = Astro.props;
+
+const PAD = { top: 18, right: 16, bottom: 26, left: 44 };
+const iw = width - PAD.left - PAD.right;
+const ih = height - PAD.top - PAD.bottom;
+
+const n = series.length;
+const times = series.map((p) => new Date(p.d + "T00:00:00Z").getTime());
+const t0 = times[0];
+const t1 = times[n - 1] || t0 + 1;
+const rawMax = Math.max(1, ...series.map((p) => p.v));
+
+// Round the top of the axis to a friendly number (10, 50, 100 ...).
+function niceCeil(v: number): number {
+  const mag = Math.pow(10, Math.floor(Math.log10(v)));
+  const norm = v / mag;
+  const step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
+  return step * mag;
+}
+const max = tidy ? niceCeil(rawMax) : rawMax;
+
+const x = (i: number) => {
+  const t = n === 1 ? t0 : times[i];
+  return PAD.left + ((t - t0) / (t1 - t0)) * iw;
+};
+const y = (v: number) => PAD.top + ih - (v / max) * ih;
+
+const line = series.map((p, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+const area = `${line} L${x(n - 1).toFixed(1)},${(PAD.top + ih).toFixed(1)} L${x(0).toFixed(1)},${(PAD.top + ih).toFixed(1)} Z`;
+
+// Three gridlines: zero, half, max.
+const ticks = [0, max / 2, max].map((v) => ({ v, y: y(v) }));
+
+const fmt = (v: number) => (v >= 1000 ? (v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + "k" : String(Math.round(v)));
+
+// Year marks along the x axis.
+const years: { x: number; label: number }[] = [];
+let lastYear = -1;
+series.forEach((p, i) => {
+  const yr = Number(p.d.slice(0, 4));
+  if (yr !== lastYear) {
+    // Only label January-ish starts, and skip if crowded.
+    if (i === 0 || p.d.slice(5, 7) <= "02") years.push({ x: x(i), label: yr });
+    lastYear = yr;
+  }
+});
+const d0 = series[0]?.d ?? "";
+const dN = series[n - 1]?.d ?? "";
+---
+
+<div class="chart" id={id} data-chart data-points={JSON.stringify(series)} data-accent={accent}>
+  <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={label} class="svg">
+    <defs>
+      <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color={accent} stop-opacity="0.18" />
+        <stop offset="100%" stop-color={accent} stop-opacity="0" />
+      </linearGradient>
+    </defs>
+
+    {ticks.map((t) => (
+      <g>
+        <line x1={PAD.left} x2={width - PAD.right} y1={t.y} y2={t.y} class="grid" />
+        <text x={PAD.left - 10} y={t.y + 4} class="axis" text-anchor="end">{fmt(t.v)}</text>
+      </g>
+    ))}
+
+    <path d={area} fill={`url(#${id}-fill)`} />
+    <path d={line} fill="none" stroke={accent} stroke-width="2" stroke-linejoin="round" stroke-linecap="round" class="line" />
+
+    {years.map((yr) => (
+      <text x={yr.x} y={height - 8} class="axis year" text-anchor="middle">{yr.label}</text>
+    ))}
+
+    <line class="guide" x1="0" x2="0" y1={PAD.top} y2={PAD.top + ih} />
+    <circle class="dot" r="4.5" cx="0" cy="0" fill={accent} stroke="#fff" stroke-width="2" />
+  </svg>
+
+  <div class="readout" aria-hidden="true">
+    <span class="r-v"></span>
+    <span class="r-d"></span>
+  </div>
+  <span class="visually-hidden">From {d0} to {dN}.</span>
+</div>
+
+<style>
+  .chart {
+    position: relative;
+    width: 100%;
+  }
+  .svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .grid {
+    stroke: var(--border-0);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .axis {
+    fill: var(--text-2);
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    letter-spacing: 0.01em;
+  }
+  .year {
+    font-size: 11px;
+  }
+  .guide,
+  .dot {
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+  .guide {
+    stroke: var(--text-2);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    vector-effect: non-scaling-stroke;
+  }
+  .chart:hover .guide,
+  .chart:hover .dot {
+    opacity: 0.7;
+  }
+  .readout {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85rem;
+    pointer-events: none;
+    min-height: 1.4rem;
+  }
+  .r-v {
+    font-weight: 600;
+    color: var(--text-0);
+    font-size: 1rem;
+  }
+  .r-d {
+    color: var(--text-2);
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>
+
+<script>
+  // Hover readout for any [data-chart]. Maps pointer x to the nearest sample.
+  document.querySelectorAll<HTMLElement>("[data-chart]").forEach((root) => {
+    const pts: { d: string; v: number }[] = JSON.parse(root.dataset.points || "[]");
+    const svg = root.querySelector("svg");
+    const guide = root.querySelector<SVGLineElement>(".guide");
+    const dot = root.querySelector<SVGCircleElement>(".dot");
+    const rv = root.querySelector<HTMLElement>(".r-v");
+    const rd = root.querySelector<HTMLElement>(".r-d");
+    if (!svg || !pts.length) return;
+
+    const PAD = { top: 18, right: 16, bottom: 26, left: 44 };
+    const VB_W = 1000;
+    const heights = 260;
+    const fmtDate = (iso: string) =>
+      new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        timeZone: "UTC",
+      });
+
+    const move = (ev: PointerEvent) => {
+      const r = svg.getBoundingClientRect();
+      const frac = Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width));
+      const t0 = new Date(pts[0].d + "T00:00:00Z").getTime();
+      const t1 = new Date(pts[pts.length - 1].d + "T00:00:00Z").getTime();
+      const target = t0 + frac * (t1 - t0);
+      let best = 0;
+      let bd = Infinity;
+      pts.forEach((p, i) => {
+        const d = Math.abs(new Date(p.d + "T00:00:00Z").getTime() - target);
+        if (d < bd) {
+          bd = d;
+          best = i;
+        }
+      });
+      const p = pts[best];
+      const vbH = (svg.viewBox.baseVal.height || heights);
+      const px = PAD.left + ((new Date(p.d + "T00:00:00Z").getTime() - t0) / (t1 - t0)) * (VB_W - PAD.left - PAD.right);
+      const maxV = Math.max(1, ...pts.map((q) => q.v));
+      const mag = Math.pow(10, Math.floor(Math.log10(maxV)));
+      const norm = maxV / mag;
+      const step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
+      const axisMax = step * mag;
+      const py = PAD.top + (vbH - PAD.top - PAD.bottom) * (1 - p.v / axisMax);
+      if (guide) {
+        guide.setAttribute("x1", String(px));
+        guide.setAttribute("x2", String(px));
+      }
+      if (dot) {
+        dot.setAttribute("cx", String(px));
+        dot.setAttribute("cy", String(py));
+      }
+      if (rv) rv.textContent = p.v.toLocaleString("en-US");
+      if (rd) rd.textContent = fmtDate(p.d);
+    };
+
+    svg.addEventListener("pointermove", move);
+    svg.addEventListener("pointerleave", () => {
+      if (rv) rv.textContent = "";
+      if (rd) rd.textContent = "";
+    });
+  });
+</script>

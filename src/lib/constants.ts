@@ -16,6 +16,7 @@ export const BLOG_SOURCE: "markdown" | "medium" = "markdown";
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/portfolio", label: "Products" },
+  { href: "/reach", label: "Reach" },
   { href: "/archive", label: "Archive" },
   { href: "/research", label: "Research" },
   { href: "/blog", label: "Blog" },

@@ -1,6 +1,9 @@
 ---
 import { APPS } from "../../data/apps";
+import { metricsFor, METRICS } from "../../data/metrics";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import AreaChart from "../../components/charts/AreaChart.astro";
+import BrandBars from "../../components/charts/BrandBars.astro";
 
 export function getStaticPaths() {
   return APPS.map((app) => ({ params: { slug: app.slug }, props: { app } }));
@@ -8,6 +11,15 @@ export function getStaticPaths() {
 
 const { app } = Astro.props;
 const isLive = app.status === "live";
+const metric = metricsFor(app.slug);
+const METRICS_END = METRICS.range.end;
+const fmtDate = (iso: string) =>
+  new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  });
 ---
 
 <BaseLayout
@@ -78,6 +90,45 @@ const isLive = app.status === "live";
           }
         </div>
       </div>
+
+      {
+        metric && (
+          <section class="reach reveal">
+            <div class="reach-head">
+              <h2>Reach</h2>
+              <p class="muted">
+                Installed audience from Google Play Console, {fmtDate(metric.firstActive ?? metric.peakDate)}{" "}
+                to {fmtDate(METRICS_END)}.
+              </p>
+            </div>
+
+            <dl class="reach-stats">
+              <div>
+                <dt>Peak installed</dt>
+                <dd>{metric.peak.toLocaleString("en-US")}</dd>
+                <dd class="sub">{fmtDate(metric.peakDate)}</dd>
+              </div>
+              <div>
+                <dt>Markets</dt>
+                <dd>{metric.countries.length}</dd>
+                <dd class="sub">top markets reported by Play</dd>
+              </div>
+            </dl>
+
+            <AreaChart
+              series={metric.series}
+              id={`app-${app.slug}`}
+              label={`Installed audience for ${app.name} over time`}
+              height={230}
+            />
+
+            <div class="reach-countries">
+              <h3>Top markets</h3>
+              <BrandBars items={metric.countries.slice(0, 6)} />
+            </div>
+          </section>
+        )
+      }
     </div>
   </article>
 </BaseLayout>
@@ -221,5 +272,69 @@ const isLive = app.status === "live";
     .shots img {
       height: 360px;
     }
+  }
+
+  .reach {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-0);
+  }
+
+  .reach-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+  }
+
+  .reach-head h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .reach-head p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .reach-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 200px));
+    gap: var(--space-5);
+    margin: 0 0 var(--space-5);
+  }
+
+  .reach-stats dt {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+  }
+
+  .reach-stats dd {
+    margin: 0.15rem 0 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-0);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .reach-stats dd.sub {
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-top: 0.1rem;
+  }
+
+  .reach-countries {
+    margin-top: var(--space-6);
+  }
+
+  .reach-countries h3 {
+    margin: 0 0 var(--space-3);
+    font-size: 1rem;
   }
 </style>

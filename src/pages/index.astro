@@ -4,7 +4,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/home/Hero.astro";
 import AppCard from "../components/home/AppCard.astro";
 import BlogCard from "../components/blog/BlogCard.astro";
+import AreaChart from "../components/charts/AreaChart.astro";
 import { APPS, LIVE_APPS, RETIRED_APPS } from "../data/apps";
+import { METRICS } from "../data/metrics";
 import { BLOG_SOURCE } from "../lib/constants";
 import { getFirstImageFromMarkdown } from "../lib/blog";
 import { getMediumPosts } from "../lib/medium";
@@ -38,6 +40,12 @@ const blog =
 
 const research = (await getCollection("research")).slice(0, 1);
 const liveCount = LIVE_APPS.length;
+const fmtDate = (iso: string) =>
+  new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC"
+  });
 ---
 
 <BaseLayout>
@@ -108,6 +116,44 @@ const liveCount = LIVE_APPS.length;
 
     <div class="grid-3 reveal delay-2">
       {archivePreview.map((app) => <AppCard app={app} />)}
+    </div>
+  </section>
+
+  <!-- Reach -->
+  <section class="section band">
+    <div class="container">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow reveal">Reach</p>
+          <h2 class="section-title reveal delay-1">The numbers, in the open.</h2>
+        </div>
+        <a class="text-link reveal delay-2" href="/reach">Full dashboard</a>
+      </div>
+
+      <p class="lead reach-lead reveal delay-2">
+        Every day since {fmtDate(METRICS.range.start)}, tracked in Google Play Console across{" "}
+        {METRICS.appsTracked} apps in {METRICS.countriesCount} countries. Nothing hidden, nothing
+        smoothed.
+      </p>
+
+      <div class="reveal delay-2">
+        <AreaChart series={METRICS.series} id="home-reach" label="Combined installed audience, 2021 to 2026" height={260} />
+      </div>
+
+      <div class="reach-facts reveal delay-3">
+        <div>
+          <strong>{METRICS.peak.value.toLocaleString("en-US")}</strong>
+          <span>peak installed devices, {fmtDate(METRICS.peak.date)}</span>
+        </div>
+        <div>
+          <strong>{METRICS.countriesCount}</strong>
+          <span>countries reached</span>
+        </div>
+        <div>
+          <strong>{METRICS.appsTracked}</strong>
+          <span>apps with full history</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -190,6 +236,37 @@ const liveCount = LIVE_APPS.length;
     margin-top: var(--space-2);
   }
 
+  .reach-lead {
+    max-width: 66ch;
+    margin-bottom: var(--space-5);
+  }
+
+  .reach-facts {
+    margin-top: var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    border-top: 1px solid var(--border-0);
+    padding-top: var(--space-5);
+  }
+
+  .reach-facts div {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .reach-facts strong {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .reach-facts span {
+    color: var(--text-2);
+    font-size: 0.86rem;
+  }
+
   .stats {
     padding: var(--space-6) var(--space-5);
     display: grid;
@@ -238,6 +315,11 @@ const liveCount = LIVE_APPS.length;
 
     .stats {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reach-facts {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
     }
 
     .sec-head {
