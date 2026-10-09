@@ -1,7 +1,7 @@
 ---
 title: Aquri
-tagline: Smart hydration tracker built for lasting habits.
-summary: A native Android hydration app with smart reminders, streak systems, and thoughtful UX to help users stay consistent.
+tagline: A hydration tracker that nudges you instead of waiting for you to log.
+summary: A native Android hydration app with adaptive reminders and streak-based progress, built to help people actually stay hydrated without turning every glass of water into a chore.
 status: in-development
 stack:
   - Android
@@ -16,7 +16,7 @@ links:
 
 ## Why this product
 
-Aquri starts from a simple insight: most hydration apps fail because they feel like manual logging tools. This product focuses on reducing friction, providing adaptive reminders, and creating clear progress loops.
+Most hydration apps hand you an empty log and expect you to remember every glass of water. Aquri works the other way around. It uses adaptive reminders based on your day and turns progress into something simple enough to keep up with, so the habit holds without constant effort.
 
 ## Product direction
 

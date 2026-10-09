@@ -1,7 +1,7 @@
 ---
 title: Dalsilens
-tagline: Real-time assistive vision tool for dichromacy
-summary: A mobile visual aid combining LMS daltonization and HSV-based detection to improve real-world color understanding.
+tagline: A camera app that helps people with color blindness tell colors apart
+summary: A mobile assistive tool that corrects confusing reds and greens on screen and names the color you point at, all running on the phone in real time.
 status: research-phase
 stack:
   - Android
@@ -16,7 +16,7 @@ links:
 
 ## Research direction
 
-Dalsilens is built around a simple idea, helping users understand colors better in real time. It combines color correction using LMS daltonization with direct color identification, all running on-device. The focus is on making the system responsive, practical to use, and reliable across different lighting conditions.
+For people with dichromacy, red and green objects can look nearly identical, and that makes everyday tasks harder than they should be. Dalsilens runs two jobs on the same camera feed. It shifts reds and greens so the difference becomes visible, and it names the color under the reticle when a name is what you actually need. Both run on-device, so there is no upload and no lag.
 
 ## Focus areas
 
