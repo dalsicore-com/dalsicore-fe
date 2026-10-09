@@ -1,19 +1,18 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandMark from "../components/ui/BrandMark.astro";
-import { APPS, LIVE_APPS } from "../data/apps";
+import { LIVE_APPS } from "../data/apps";
 
-const shipped = APPS.length;
 const live = LIVE_APPS.length;
 ---
 
 <BaseLayout
   title="About | Dalsicore"
-  description="Dalsicore is a solo Android studio in Indonesia, started as Euni Dev. 20+ apps shipped, one live product, and a lot learned from the ones that failed."
+  description="Dalsicore is a solo Android studio in Indonesia, started as Euni Dev. It has shipped 20+ apps, runs one live product, and applies what it learned from the ones it retired."
 >
   <section class="section container about">
     <p class="eyebrow reveal">About</p>
-    <h1 class="section-title reveal delay-1">One person, 20+ shipped apps, and a lot of lessons that only came from failing.</h1>
+    <h1 class="section-title reveal delay-1">One person, 20+ shipped apps, and the lessons that only came from doing the work.</h1>
 
     <div class="cols">
       <div class="prose reveal delay-2">
@@ -23,20 +22,21 @@ const live = LIVE_APPS.length;
 
         <p>
           I started out shipping apps under the name <strong>Euni Dev</strong>. Between 2022 and
-          2024 I published more than 20 apps to Google Play. Almost none of them got traction. A
-          few picked up a handful of installs and some kind ratings. Most picked up nothing at all.
-          One by one, I retired them.
+          2024 I published more than 20 apps to Google Play. Most stayed small. A few picked up a
+          handful of installs and some kind ratings, and the rest never found an audience. One by
+          one, I retired them.
         </p>
 
         <p>
-          That stretch taught me more than a success would have. Shipping is a skill. Getting people
-          to come back is a different problem. So I stopped counting apps and started working on
-          depth instead.
+          That stretch taught me more than a single win would have. Shipping is a skill. Getting
+          people to come back is a different problem. So I stopped counting apps and started working
+          on depth instead.
         </p>
 
         <p>
           In 2025 I rebranded to <strong>Dalsicore</strong>. Fewer products, better execution, and
-          AI built into how the work gets done.
+          AI built into how the work gets done. It is the same one-person operation, under a name
+          that matches what I build now.
         </p>
 
         <p>
@@ -58,8 +58,8 @@ const live = LIVE_APPS.length;
               <dd>Anaf Naufalian</dd>
             </div>
             <div>
-              <dt>Founded</dt>
-              <dd>2025, rebranded from Euni Dev</dd>
+              <dt>Dalsicore brand</dt>
+              <dd>Launched 2025, previously Euni Dev</dd>
             </div>
             <div>
               <dt>Team</dt>
@@ -71,7 +71,7 @@ const live = LIVE_APPS.length;
             </div>
             <div>
               <dt>Apps shipped</dt>
-              <dd>{shipped}+</dd>
+              <dd>20+</dd>
             </div>
             <div>
               <dt>Live products</dt>
@@ -84,8 +84,8 @@ const live = LIVE_APPS.length;
           <p class="eyebrow">AI-native</p>
           <h2>Built with Claude, not just assisted by it</h2>
           <p>
-            Our live product was built end to end with Claude. Described, reviewed, iterated, with
-            no hand-written code. It is how one person ships what used to take a team.
+            My live product was built end to end with Claude. Described, reviewed, iterated, with
+            no hand-written code. It is how one person now ships what used to take a team.
           </p>
         </div>
       </aside>

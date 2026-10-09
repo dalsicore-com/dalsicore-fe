@@ -12,11 +12,11 @@ const products = (await getCollection("portfolio")).sort((a, b) => a.data.order 
   description="What Dalsicore is building now: a live Android product, an app in development, and applied research."
 >
   <section class="section container">
-    <p class="eyebrow reveal">What we build</p>
+    <p class="eyebrow reveal">What I build</p>
     <h1 class="section-title reveal delay-1">Products</h1>
     <p class="lead intro reveal delay-2">
       Dalsicore is deliberately small. One live product, one in development, and a research stream,
-      plus a shelf of shipped apps that taught us how to get here.
+      plus a shelf of shipped apps that taught me how to get here.
     </p>
 
     <h2 class="group-title reveal delay-2">Live &amp; in development</h2>
@@ -45,7 +45,7 @@ const products = (await getCollection("portfolio")).sort((a, b) => a.data.order 
   <section class="section container">
     <h2 class="group-title reveal">Shipped &amp; retired</h2>
     <p class="lead intro reveal delay-1">
-      Listings we've since unpublished. Kept visible on purpose.
+      Listings I have since unpublished. Kept visible on purpose.
     </p>
     <div class="grid-3 reveal delay-2">
       {RETIRED_APPS.map((app) => <AppCard app={app} />)}

@@ -49,7 +49,7 @@ The current approach combines two parts that work together:
 1. **LMS daltonization** to shift red, green, and blue so their differences are easier to see.
 2. **HSV-based identification** to show a basic color name when pointing at a specific pixel.
 
-## What we're testing
+## What I'm testing
 
 - Whether shifting red, green, and blue through LMS daltonization actually makes color differences easier to notice in real-time.
 - How useful basic color labels are when users point at specific parts of a scene.
