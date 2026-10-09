@@ -23,7 +23,6 @@ const { title, excerpt, publishedAt, author, tags = [], sourceUrl } = Astro.prop
   author={author}
 >
   <article class="container section post">
-    <p class="eyebrow reveal">Journal Entry</p>
     <h1 class="section-title reveal delay-1">{title}</h1>
     <p class="meta reveal delay-2">Diposting pada {formatDate(publishedAt)} oleh {author}</p>
     {

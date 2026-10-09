@@ -28,7 +28,7 @@ const { app } = Astro.props;
 
   <div class="foot">
     {app.rating && <span class="metric">★ {app.rating.toFixed(1)}</span>}
-    {app.builtWithClaude && <span class="metric claude">Built with Claude</span>}
+    {app.links?.play && <span class="metric">On Google Play</span>}
   </div>
 </a>
 
@@ -118,7 +118,4 @@ const { app } = Astro.props;
     font-weight: 600;
   }
 
-  .metric.claude {
-    color: var(--accent-1);
-  }
 </style>

@@ -43,7 +43,7 @@ export const APPS: AppEntry[] = [
     package: "com.dalsicore.substrack",
     tagline: "See every subscription and recurring bill in one place, before it renews.",
     description:
-      "Subscriptions are small on their own and easy to forget, so the money leaks quietly. SubsTracker puts every recurring charge in one view: what renews, when, and what it costs per month, with a yearly projection and reminders before each renewal. Local-first with no bank connection and no account required. Built end to end with Claude, with no hand-written code.",
+      "Subscriptions are small on their own and easy to forget, so the money leaks quietly. SubsTracker puts every recurring charge in one view: what renews, when, and what it costs per month, with a yearly projection and reminders before each renewal. Local-first with no bank connection and no account required.",
     category: "Finance / Tools",
     status: "live",
     shipped: 2026,

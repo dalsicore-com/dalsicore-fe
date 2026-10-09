@@ -14,7 +14,6 @@ const { title, tagline, summary, stack = [], status } = Astro.props;
 
 <BaseLayout title={`${title} | Dalsicore`} description={summary}>
   <article class="container section entry">
-    <p class="eyebrow reveal">Product Entry</p>
     <h1 class="section-title reveal delay-1">{title}</h1>
     <p class="tagline reveal delay-2">{tagline}</p>
     <p class="status reveal delay-2">Status: <span>{status}</span></p>

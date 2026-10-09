@@ -1,7 +1,7 @@
 export const SITE = {
   title: "Dalsicore",
   description:
-    "Dalsicore is a solo Android studio in Indonesia. SubsTracker, a subscription tracker for Android, is live on Google Play. Aquri and Dalsilens are next, all built AI-native with Claude.",
+    "Dalsicore is a solo Android studio in Indonesia. SubsTracker, a subscription tracker for Android, is live on Google Play. Aquri and Dalsilens are next.",
   url: "https://dalsicore.com"
 };
 

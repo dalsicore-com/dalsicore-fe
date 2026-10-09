@@ -47,7 +47,7 @@ const fmtDate = (iso: string) =>
           }
           <span class="chip">Shipped {app.shipped}</span>
           {app.rating && <span class="chip">★ {app.rating.toFixed(1)} avg</span>}
-          {app.builtWithClaude && <span class="chip claude">Built with Claude</span>}
+          
         </div>
       </div>
     </header>
@@ -202,12 +202,6 @@ const fmtDate = (iso: string) =>
     border-color: rgba(34, 197, 94, 0.4);
     color: #15803d;
     background: rgba(34, 197, 94, 0.08);
-  }
-
-  .chip.claude {
-    border-color: rgba(60, 86, 244, 0.3);
-    color: var(--accent-1);
-    background: rgba(60, 86, 244, 0.06);
   }
 
   .body {
